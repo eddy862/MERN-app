@@ -1,5 +1,10 @@
 import React from "react";
-import { MdCreate, MdDelete, MdOutlinePushPin } from "react-icons/md";
+import {
+  MdCreate,
+  MdDelete,
+  MdOutlinePushPin,
+  MdPushPin,
+} from "react-icons/md";
 
 type Props = {
   title: string;
@@ -30,10 +35,17 @@ function NoteCard({
           <span className="text-xs text-slate-500">{date}</span>
         </div>
 
-        <MdOutlinePushPin
-          className={`${isPinned ? "text-primary" : "text-slate-300"}`}
-          onClick={onPinNote}
-        />
+        {!isPinned ? (
+          <MdOutlinePushPin
+            className="cursor-pointer hover:text-primary"
+            onClick={onPinNote}
+          />
+        ) : (
+          <MdPushPin
+            className="cursor-pointer text-primary"
+            onClick={onPinNote}
+          />
+        )}
       </div>
 
       <p className="text-xs text-slate-600 mt-2">
@@ -43,8 +55,8 @@ function NoteCard({
 
       <div className="flex items-center justify-between mt-2">
         <div className="flex flex-wrap gap-x-2 gap-y-1 text-xs text-slate-500">
-          {tags.map((tag) => (
-            <span>{`#${tag}`}</span>
+          {tags.map((tag, index) => (
+            <span key={index}>#{tag}</span>
           ))}
         </div>
 

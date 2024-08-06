@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import NoteCard from "../../components/Cards/NoteCard";
 import { MdAdd } from "react-icons/md";
 import AddEditNote from "./AddEditNote";
 import Modal from "react-modal";
+import { type User, type UserResponse } from "../../types/apiTypes";
+import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../utils/axiosInstance";
+import axios from "axios";
 
 type Props = {};
 
@@ -14,9 +18,35 @@ const Home = (props: Props) => {
     data: null,
   });
 
+  const [userInfo, setUserInfo] = useState<User | undefined>(undefined);
+
+  const navigate = useNavigate();
+
+  const getUserInfo = async () => {
+    try {
+      const { data }: { data: UserResponse } = await axiosInstance.get("/user");
+
+      if (data && data.user) {
+        setUserInfo(data.user);
+      }
+    } catch (err) {
+      //token not found or unauthorized user
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401) {
+          localStorage.clear();
+          navigate("/login");
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    getUserInfo();
+  }, []);
+
   return (
     <>
-      <Navbar />
+      <Navbar userInfo={userInfo} />
 
       <div className="container mx-auto">
         <div className="grid grid-cols-3 gap-4 mt-8">
@@ -69,7 +99,11 @@ const Home = (props: Props) => {
       <button
         className="w-16 h-16 flex items-center justify-center rounded-2xl bg-primary hover:bg-blue-600 absolute right-10 bottom-10"
         onClick={() => {
-          setOpenAddEditModal((prev) => ({ ...prev, visible: true }));
+          setOpenAddEditModal((prev) => ({
+            ...prev,
+            type: "add",
+            visible: true,
+          }));
         }}
       >
         <MdAdd className="text-[32px] text-white" />
@@ -86,7 +120,13 @@ const Home = (props: Props) => {
         contentLabel=""
         className="w-[40%] max-h-3/4 bg-white rounded-md mx-auto mt-20 p-5"
       >
-        <AddEditNote />
+        <AddEditNote
+          onCloseModal={() =>
+            setOpenAddEditModal((prev) => ({ ...prev, visible: false }))
+          }
+          noteData={openAddEditModal.data}
+          type={openAddEditModal.type}
+        />
       </Modal>
     </>
   );

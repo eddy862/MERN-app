@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import Navbar from "../../components/Navbar/Navbar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PasswordInput from "../../components/Input/PasswordInput";
 import { validateEmail } from "./../../utils/helper";
+import axiosInstance from "../../utils/axiosInstance";
+import axios from "axios";
+import { SignupResponse } from "../../types/apiTypes";
 
 type Props = {};
 
@@ -13,6 +16,8 @@ const Signup = (props: Props) => {
     pwd: "",
   });
   const [error, setError] = useState("");
+
+  const navigate = useNavigate();
 
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -55,9 +60,35 @@ const Signup = (props: Props) => {
       return;
     }
 
-    //API call
-
     setError("");
+
+    //API call
+    try {
+      const { data }: { data: SignupResponse } = await axiosInstance.post(
+        "/user",
+        {
+          fullName: signupInfo.name,
+          email: signupInfo.email,
+          password: signupInfo.pwd,
+        }
+      );
+
+      //store token
+      if (data && data.accessToken) {
+        localStorage.setItem("token", data.accessToken);
+        navigate("/dashboard");
+      }
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        if (err.response && err.response.data && err.response.data.msg) {
+          setError(err.response.data.msg);
+        } else {
+          setError("An unexpected error occured. Please try again");
+        }
+      } else {
+        setError("An unexpected error occured. Please try again");
+      }
+    }
   };
 
   return (
