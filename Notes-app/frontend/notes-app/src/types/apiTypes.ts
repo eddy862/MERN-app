@@ -3,6 +3,24 @@ type ErrorResponse = {
   msg?: string;
 };
 
+export type User = {
+  fullName: string;
+  email: string;
+  password: string;
+  _id?: string;
+  createdAt?: string;
+};
+
+export type Note = {
+  _id: string;
+  createdAt: string;
+  title: string;
+  description: string;
+  tags: string[];
+  isPinned: boolean;
+  userId: string;
+};
+
 export type LoginResponse = ErrorResponse & {
   email?: string;
   accessToken?: string;
@@ -13,15 +31,16 @@ export type SignupResponse = ErrorResponse & {
   user?: User;
 };
 
-export type User = {
-  fullName: string;
-  email: string;
-  password: string;
-  _id?: string;
-  createdAt?: string;
-  __v?: number;
-};
-
 export type UserResponse = ErrorResponse & {
   user?: User;
 };
+
+export type AllNotesResp = ErrorResponse & {
+  notes: Note[];
+};
+
+export type CreateNoteResp = ErrorResponse & {
+  note: Note;
+}
+
+export type deleteNoteResp = CreateNoteResp;

@@ -135,7 +135,7 @@ app.get("/user", authenticateToken, async (req, res) => {
     const isUser = await User.findById(user._id, {
       fullName: true,
       email: true,
-      createdAt: true
+      createdAt: true,
     });
 
     if (!isUser) {
@@ -205,7 +205,7 @@ app.patch("/notes/:id", authenticateToken, async (req, res) => {
     if (title) note.title = title;
     if (description) note.description = description;
     if (tags) note.tags = tags;
-    if (isPinned) note.isPinned = isPinned;
+    if (isPinned) note.isPinned = isPinned.value;
 
     await note.save();
 
@@ -221,7 +221,9 @@ app.get("/notes", authenticateToken, async (req, res) => {
   const { user } = req.user;
 
   try {
-    const notes = await Note.find({ userId: user._id }).sort({ isPinned: -1 });
+    const notes = await Note.find({ userId: user._id }, { __v: false }).sort({
+      isPinned: -1,
+    });
 
     return res
       .status(200)

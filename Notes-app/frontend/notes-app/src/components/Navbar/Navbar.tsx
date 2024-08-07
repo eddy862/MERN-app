@@ -6,11 +6,12 @@ import { type User } from "../../types/apiTypes";
 
 type Props = {
   userInfo?: User;
+  searchQuery?: string;
+  setSearchQuery?: React.Dispatch<React.SetStateAction<string>>;
+  handleSearch?: (query: string) => void
 };
 
-const Navbar = ({ userInfo }: Props) => {
-  const [searchQuery, setSearchQuery] = useState("");
-
+const Navbar = ({ userInfo, searchQuery, setSearchQuery, handleSearch }: Props) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -18,8 +19,6 @@ const Navbar = ({ userInfo }: Props) => {
     localStorage.clear();
     navigate("/login");
   };
-
-  const handleSearch = () => {};
 
   return (
     <div className="bg-white flex items-center justify-between px-6 py-2 drop-shadow">
@@ -29,12 +28,14 @@ const Navbar = ({ userInfo }: Props) => {
 
       {location.pathname === "/dashboard" && (
         <>
-          <SearchBar
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onClearSearch={() => setSearchQuery("")}
-            handleSearch={handleSearch}
-          />
+          {searchQuery !== undefined && setSearchQuery !== undefined && handleSearch !== undefined && (
+            <SearchBar
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onClearSearch={() => setSearchQuery("")}
+              handleSearch={handleSearch}
+            />
+          )}
 
           <ProfileInfo userName={userInfo?.fullName} onLogout={onLogout} />
         </>

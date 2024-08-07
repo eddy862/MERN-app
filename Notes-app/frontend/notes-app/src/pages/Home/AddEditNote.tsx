@@ -1,23 +1,80 @@
 import React, { useState } from "react";
 import TagInput from "../../components/Input/TagInput";
 import { MdClose } from "react-icons/md";
+import axios from "axios";
+import { CreateNoteResp, Note } from "../../types/apiTypes";
+import axiosInstance from "../../utils/axiosInstance";
 
 type Props = {
   onCloseModal: () => void;
-  type: string;
-  noteData: null;
+  type?: "add" | "edit";
+  noteData?: Note;
+  getAllNotes: () => Promise<void>;
+  showToastMsg: (msg: string, type: "edit" | "delete" | "add") => void;
 };
 
-function AddEditNote({ onCloseModal, noteData, type }: Props) {
-  const [title, setTitle] = useState("");
-  const [desp, setDesp] = useState("");
-  const [tags, setTags] = useState<string[]>([]);
+function AddEditNote({
+  onCloseModal,
+  noteData,
+  type,
+  getAllNotes,
+  showToastMsg,
+}: Props) {
+  const [title, setTitle] = useState(noteData?.title || "");
+  const [desp, setDesp] = useState(noteData?.description || "");
+  const [tags, setTags] = useState<string[]>(noteData?.tags || []);
 
   const [error, setError] = useState("");
 
-  const addNewNote = async () => {};
+  const addNewNote = async () => {
+    try {
+      const { data }: { data: CreateNoteResp } = await axiosInstance.post(
+        "/notes",
+        { title, description: desp, tags }
+      );
 
-  const editNote = async () => {};
+      if (data && data.note) {
+        getAllNotes();
+        onCloseModal();
+        showToastMsg("Note Added Successfully", "add");
+      }
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        if (err.response && err.response.data && err.response.data.msg) {
+          setError(err.response.data.msg);
+        }
+      } else {
+        setError("An unexpected error occured. Please try again");
+      }
+    }
+  };
+
+  const editNote = async () => {
+    if (noteData?._id) {
+      try {
+        const { data }: { data: CreateNoteResp } = await axiosInstance.patch(
+          `notes/${noteData._id}`,
+          { title, description: desp, tags }
+        );
+
+        if (data && data.note) {
+          getAllNotes();
+          onCloseModal();
+          showToastMsg("Note Updated Successfully", "edit");
+        }
+      } catch (err) {
+        if (axios.isAxiosError(err)) {
+          if (err.response && err.response.data && err.response.data.msg) {
+            setError(err.response.data.msg);
+          }
+        } else {
+          setError("An unexpected error occured. Please try again");
+        }
+      }
+    } else {
+      console.error("Undefined note id. Please try again");
+    }
+  };
 
   const handleAddNote = () => {
     if (title.trim().length === 0) {
@@ -39,8 +96,6 @@ function AddEditNote({ onCloseModal, noteData, type }: Props) {
     if (type === "add") {
       addNewNote();
     }
-
-    onCloseModal();
   };
 
   return (
@@ -85,7 +140,7 @@ function AddEditNote({ onCloseModal, noteData, type }: Props) {
         className="btn-primary font-medium mt-5 p-3"
         onClick={handleAddNote}
       >
-        ADD
+        {type === "add" ? "ADD" : "UPDATE"}
       </button>
     </div>
   );
