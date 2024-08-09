@@ -6,6 +6,7 @@ import { validateEmail } from "./../../utils/helper";
 import axiosInstance from "../../utils/axiosInstance";
 import axios from "axios";
 import { SignupResponse } from "../../types/apiTypes";
+import { ScaleLoader } from "react-spinners";
 
 type Props = {};
 
@@ -16,6 +17,7 @@ const Signup = (props: Props) => {
     pwd: "",
   });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -61,11 +63,12 @@ const Signup = (props: Props) => {
     }
 
     setError("");
+    setLoading(true);
 
     //API call
     try {
       const { data }: { data: SignupResponse } = await axiosInstance.post(
-        "/user",
+        "/auth/signup",
         {
           fullName: signupInfo.name,
           email: signupInfo.email,
@@ -88,6 +91,8 @@ const Signup = (props: Props) => {
       } else {
         setError("An unexpected error occured. Please try again");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -125,8 +130,12 @@ const Signup = (props: Props) => {
 
             {error && <p className="text-red-500 text-xs pb-1">{error}</p>}
 
-            <button type="submit" className="btn-primary">
-              Create Account
+            <button type="submit" className="btn-primary" disabled={loading}>
+              {loading ? (
+                <ScaleLoader height={15} width={4} />
+              ) : (
+                "Create Account"
+              )}
             </button>
 
             <p className="text-sm text-center mt-4">

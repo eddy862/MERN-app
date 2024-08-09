@@ -6,12 +6,14 @@ import { validateEmail } from "./../../utils/helper";
 import axiosInstance from "../../utils/axiosInstance";
 import axios from "axios";
 import { type LoginResponse } from "../../types/apiTypes";
+import { ScaleLoader } from "react-spinners";
 
 type Props = {};
 
 const Login = (props: Props) => {
   const [loginInfo, setLoginInfo] = useState({ email: "", pwd: "" });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -46,11 +48,12 @@ const Login = (props: Props) => {
     }
 
     setError("");
+    setLoading(true);
 
     //API call
     try {
       const { data }: { data: LoginResponse } = await axiosInstance.post(
-        "/login",
+        "/auth/login",
         {
           email: loginInfo.email,
           password: loginInfo.pwd,
@@ -72,6 +75,8 @@ const Login = (props: Props) => {
       } else {
         setError("An unexpected error occured. Please try again");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -97,8 +102,14 @@ const Login = (props: Props) => {
 
             {error && <p className="text-red-500 text-xs pb-1">{error}</p>}
 
-            <button type="submit" className="btn-primary">
-              Login
+            <button
+              type="submit"
+              className={`btn-primary ${
+                loading ? "opacity-50" : ""
+              } `}
+              disabled={loading}
+            >
+              {loading ? <ScaleLoader height={15} width={4} /> : "Login"}
             </button>
 
             <p className="text-sm text-center mt-4">

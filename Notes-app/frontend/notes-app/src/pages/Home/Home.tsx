@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import NoteCard from "../../components/Cards/NoteCard";
 import { MdAdd } from "react-icons/md";
@@ -19,6 +19,8 @@ import moment from "moment";
 import Toast from "../../components/ToastMessage/Toast";
 import EmptyCard from "../../components/EmptyCard/EmptyCard";
 import AddNoteSvg from "../../assets/add-notes.svg";
+import useDebounce from "../../hooks/useDebounce";
+import ConfirmDelete from "./ConfirmDelete";
 
 Modal.setAppElement("#root");
 
@@ -40,6 +42,9 @@ const Home = (props: Props) => {
   const [openAddEditModal, setOpenAddEditModal] = useState<ModalType>({
     visible: false,
   });
+  const [openDeleteModal, setOpenDeleteModal] = useState<ModalType>({
+    visible: false,
+  });
 
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -54,7 +59,7 @@ const Home = (props: Props) => {
   const navigate = useNavigate();
 
   const handleSearch = (query: string) => {
-    console.log(query)
+    console.log(query);
     const targetQuery = query.trim().toLowerCase();
 
     if (targetQuery === "") {
@@ -71,17 +76,20 @@ const Home = (props: Props) => {
     }
   };
 
-  const handleEditNote = (noteData: Note) => {
+  const handleEditNote = useCallback((noteData: Note) => {
     setOpenAddEditModal({ visible: true, type: "edit", data: noteData });
-  };
+  }, []);
 
-  const showToastMessage = (msg: string, type: "edit" | "delete" | "add") => {
-    setShowToastMsg({
-      visible: true,
-      type: type,
-      msg: msg,
-    });
-  };
+  const showToastMessage = useCallback(
+    (msg: string, type: "edit" | "delete" | "add") => {
+      setShowToastMsg({
+        visible: true,
+        type: type,
+        msg: msg,
+      });
+    },
+    []
+  );
 
   const getUserInfo = async () => {
     try {
@@ -132,7 +140,7 @@ const Home = (props: Props) => {
         );
       }
     } finally {
-      setSearchQuery("")
+      setSearchQuery("");
     }
   };
 
@@ -163,7 +171,7 @@ const Home = (props: Props) => {
     try {
       const { data }: { data: CreateNoteResp } = await axiosInstance.patch(
         `notes/${noteId}`,
-        { isPinned: {value: isPinnedValue} }
+        { isPinned: { value: isPinnedValue } }
       );
 
       if (data && data.note) {
@@ -178,7 +186,7 @@ const Home = (props: Props) => {
         console.error("An unexpected error occured. Please try again");
       }
     }
-  }
+  };
 
   useEffect(() => {
     getAllNotes();
@@ -186,7 +194,7 @@ const Home = (props: Props) => {
   }, []);
 
   return (
-    <>
+    <div className="h-full">
       <Navbar
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
@@ -196,7 +204,7 @@ const Home = (props: Props) => {
 
       <div className="container mx-auto">
         {filteredNotes.length > 0 ? (
-          <div className="grid grid-cols-3 gap-4 mt-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mt-8">
             {filteredNotes.map((note) => (
               <NoteCard
                 key={note._id}
@@ -205,7 +213,9 @@ const Home = (props: Props) => {
                 date={moment(note.createdAt).format("Do MMM YYYY")}
                 tags={note.tags}
                 isPinned={note.isPinned}
-                onDelete={() => deleteNote(note._id)}
+                onDelete={() =>
+                  setOpenDeleteModal({ data: note, visible: true })
+                }
                 onEdit={() => handleEditNote(note)}
                 onPinNote={() => updateIsPinned(note._id, !note.isPinned)}
               />
@@ -220,10 +230,9 @@ const Home = (props: Props) => {
       </div>
 
       <button
-        className="w-16 h-16 flex items-center justify-center rounded-2xl bg-primary hover:bg-blue-600 absolute right-10 bottom-10"
+        className="w-16 h-16 flex items-center justify-center rounded-2xl bg-primary hover:bg-blue-600 fixed md:left-[88%] md:bottom-10 bottom-5 left-[84%]"
         onClick={() => {
           setOpenAddEditModal({
-            data: undefined,
             type: "add",
             visible: true,
           });
@@ -240,13 +249,10 @@ const Home = (props: Props) => {
         style={{
           overlay: { backgroundColor: "rgba(0, 0, 0, 0.5)" },
         }}
-        contentLabel=""
-        className="w-[40%] max-h-3/4 bg-white rounded-md mx-auto mt-20 p-5"
+        className="w-[70%] md:w-[60%] lg:w-[50%] xl:w-[40%] 2xl:w-[35%] max-h-3/4 bg-white rounded-md mx-auto mt-20 p-5"
       >
         <AddEditNote
-          onCloseModal={() =>
-            setOpenAddEditModal((prev) => ({ ...prev, visible: false }))
-          }
+          onCloseModal={() => setOpenAddEditModal({ visible: false })}
           noteData={openAddEditModal.data}
           type={openAddEditModal.type}
           getAllNotes={getAllNotes}
@@ -254,11 +260,28 @@ const Home = (props: Props) => {
         />
       </Modal>
 
+      <Modal
+        isOpen={openDeleteModal.visible}
+        onRequestClose={() =>
+          setOpenDeleteModal((prev) => ({ ...prev, visible: false }))
+        }
+        style={{
+          overlay: { backgroundColor: "rgba(0, 0, 0, 0.5)" },
+        }}
+        className="w-[70%] md:w-[60%] lg:w-[50%] xl:w-[40%] 2xl:w-[35%] max-h-3/4 bg-white rounded-md mx-auto mt-20 p-5"
+      >
+        <ConfirmDelete
+          noteData={openDeleteModal.data}
+          onCloseModal={() => setOpenDeleteModal({ visible: false })}
+          onDeleteNote={deleteNote}
+        />
+      </Modal>
+
       <Toast
         toastDetails={showToastMsg}
         onClose={() => setShowToastMsg((prev) => ({ ...prev, visible: false }))}
       />
-    </>
+    </div>
   );
 };
 
