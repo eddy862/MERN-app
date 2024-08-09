@@ -19,8 +19,8 @@ import moment from "moment";
 import Toast from "../../components/ToastMessage/Toast";
 import EmptyCard from "../../components/EmptyCard/EmptyCard";
 import AddNoteSvg from "../../assets/add-notes.svg";
-import useDebounce from "../../hooks/useDebounce";
 import ConfirmDelete from "./ConfirmDelete";
+import Profile from "../Profile/Profile";
 
 Modal.setAppElement("#root");
 
@@ -45,6 +45,7 @@ const Home = (props: Props) => {
   const [openDeleteModal, setOpenDeleteModal] = useState<ModalType>({
     visible: false,
   });
+  const [openProfileModal, setOpenProfileModal] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -200,6 +201,7 @@ const Home = (props: Props) => {
         setSearchQuery={setSearchQuery}
         userInfo={userInfo}
         handleSearch={handleSearch}
+        setOpenProfile={() => setOpenProfileModal(true)}
       />
 
       <div className="container mx-auto">
@@ -274,6 +276,21 @@ const Home = (props: Props) => {
           noteData={openDeleteModal.data}
           onCloseModal={() => setOpenDeleteModal({ visible: false })}
           onDeleteNote={deleteNote}
+        />
+      </Modal>
+
+      <Modal
+        isOpen={openProfileModal}
+        onRequestClose={() => setOpenProfileModal(false)}
+        style={{
+          overlay: { backgroundColor: "rgba(0, 0, 0, 0.5)" },
+        }}
+        className="w-[70%] md:w-[60%] lg:w-[50%] xl:w-[40%] 2xl:w-[35%] max-h-3/4 bg-white rounded-md mx-auto mt-20 p-5"
+      >
+        <Profile
+          userData={userInfo}
+          onCloseModal={() => setOpenProfileModal(false)}
+          setUserInfo={setUserInfo}
         />
       </Modal>
 

@@ -1,15 +1,19 @@
-import React, { useState } from "react";
+import React from "react";
 import { getInitials } from "../../utils/helper";
 
 type Props = {
   onLogout: () => void;
-  userName?: string;
+  userName: string;
+  setOpenProfile: () => void;
 };
 
-const ProfileInfo = ({ onLogout, userName }: Props) => {
+const ProfileInfo = ({ onLogout, userName, setOpenProfile }: Props) => {
   return (
     <div className="flex items-center gap-3">
-      <div className="w-12 h-12 flex items-center justify-center rounded-full text-slate-950 font-medium bg-slate-100">
+      <div
+        className="w-12 h-12 flex items-center justify-center rounded-full text-slate-950 font-medium bg-slate-100 cursor-pointer"
+        onClick={setOpenProfile}
+      >
         {userName && getInitials(userName.trim())}
       </div>
 

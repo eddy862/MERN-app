@@ -5,9 +5,10 @@ type Props = {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
+  inputName?: string
 };
 
-function PasswordInput({ value, onChange, placeholder }: Props) {
+function PasswordInput({ value, onChange, placeholder, inputName }: Props) {
   const [isShowPwd, setIsShowPwd] = useState(false);
 
   const toggleShowPwd = () => {
@@ -21,7 +22,7 @@ function PasswordInput({ value, onChange, placeholder }: Props) {
         value={value}
         onChange={onChange}
         placeholder={placeholder || "Password"}
-        name="pwd"
+        name={inputName || "pwd"}
         className="input-box mb-0 border-0 px-0 mr-3"
       />
 
