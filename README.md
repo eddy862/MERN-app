@@ -2,7 +2,7 @@
 Full stack applications built with the MERN (MongoDB, Express, React, Node)
 
 ## 1. Notes App
-An app to help user to create, edit, delete, and organize their notes
+A app focus on basic CRUD operation, user authentication using JWT
 
 ### Features: 
 - Create, edit, and delete notes
