@@ -11,7 +11,7 @@ An app to help user to create, edit, delete, and organize their notes
 - User authentication (register, login, logout)
 - Update user's profile (username, email, password)
 
-### Installation
+### Installation:
 #### Clone the Repository
 ```bash
 git clone https://github.com/eddy862/MERN-app.git
@@ -45,11 +45,12 @@ npm install
 npm run dev
 ```
 
-#### Usage
+### Usage:
 1. Make sure both the backedn and frontend servers are running.
 2. Open browser and go to http://localhost:5173/login for login or http://localhost:5173/signup for new user registration
+3. After login, start creating, editing, and organizing notes
 
-### API Endpoint
+### API Endpoint:
 #### Authentication
 - POST /auth/signup: register a new user
 - POST /auth/login: login with existing credentials
