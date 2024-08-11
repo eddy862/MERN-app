@@ -10,7 +10,7 @@ type Props = {
   type?: "add" | "edit";
   noteData?: Note;
   getAllNotes: () => Promise<void>;
-  showToastMsg: (msg: string, type: "edit" | "delete" | "add") => void;
+  showToastMsg: (msg: string, type: "edit" | "delete" | "add", loading: boolean) => void;
 };
 
 function AddEditNote({
@@ -27,6 +27,7 @@ function AddEditNote({
   const [error, setError] = useState("");
 
   const addNewNote = async () => {
+    showToastMsg("Adding Note...", "add", true);
     try {
       const { data }: { data: CreateNoteResp } = await axiosInstance.post(
         "/notes",
@@ -36,7 +37,7 @@ function AddEditNote({
       if (data && data.note) {
         getAllNotes();
         onCloseModal();
-        showToastMsg("Note Added Successfully", "add");
+        showToastMsg("Note Added Successfully", "add", false);
       }
     } catch (err) {
       if (axios.isAxiosError(err)) {
@@ -51,6 +52,7 @@ function AddEditNote({
 
   const editNote = async () => {
     if (noteData?._id) {
+      showToastMsg("Updating Note", "edit", true);
       try {
         const { data }: { data: CreateNoteResp } = await axiosInstance.patch(
           `notes/${noteData._id}`,
@@ -60,7 +62,7 @@ function AddEditNote({
         if (data && data.note) {
           getAllNotes();
           onCloseModal();
-          showToastMsg("Note Updated Successfully", "edit");
+          showToastMsg("Note Updated Successfully", "edit", false);
         }
       } catch (err) {
         if (axios.isAxiosError(err)) {

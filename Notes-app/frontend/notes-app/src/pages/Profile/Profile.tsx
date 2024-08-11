@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import Navbar from "../../components/Navbar/Navbar";
 import { User, UserResponse } from "../../types/apiTypes";
 import axiosInstance from "../../utils/axiosInstance";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { MdClose, MdCreate } from "react-icons/md";
 import PasswordInput from "../../components/Input/PasswordInput";
 import { validateEmail } from "../../utils/helper";
+import { ScaleLoader } from "react-spinners";
 
 type Props = {
   userData?: User;
@@ -34,8 +33,6 @@ const Profile = ({ userData, onCloseModal, setUserInfo }: Props) => {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const navigate = useNavigate();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -189,7 +186,7 @@ const Profile = ({ userData, onCloseModal, setUserInfo }: Props) => {
       <p className="text-xs pb-1 text-red-500">{error}</p>
 
       <button disabled={loading} className="btn-primary" onClick={handleSubmit}>
-        UPDATE
+        {loading ? <ScaleLoader height={15} width={4} /> : "UPDATE"}
       </button>
     </div>
   );

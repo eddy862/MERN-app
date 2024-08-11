@@ -36,6 +36,7 @@ export type ToastType = {
   visible: boolean;
   type?: "edit" | "delete" | "add";
   msg?: string;
+  loading: boolean;
 };
 
 const Home = (props: Props) => {
@@ -55,6 +56,7 @@ const Home = (props: Props) => {
 
   const [showToastMsg, setShowToastMsg] = useState<ToastType>({
     visible: false,
+    loading: false
   });
 
   const navigate = useNavigate();
@@ -82,11 +84,12 @@ const Home = (props: Props) => {
   }, []);
 
   const showToastMessage = useCallback(
-    (msg: string, type: "edit" | "delete" | "add") => {
+    (msg: string, type: "edit" | "delete" | "add", loading: boolean) => {
       setShowToastMsg({
         visible: true,
         type: type,
         msg: msg,
+        loading: loading
       });
     },
     []
@@ -146,6 +149,7 @@ const Home = (props: Props) => {
   };
 
   const deleteNote = async (noteId: string) => {
+    showToastMessage("Deleting Note...", "delete", true);
     try {
       const { data }: { data: deleteNoteResp } = await axiosInstance.delete(
         `notes/${noteId}`
@@ -153,7 +157,7 @@ const Home = (props: Props) => {
 
       if (data && data.note) {
         getAllNotes();
-        showToastMessage("Note Deleted Successfully", "delete");
+        showToastMessage("Note Deleted Successfully", "delete", false);
       }
     } catch (err) {
       if (axios.isAxiosError(err)) {

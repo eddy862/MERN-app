@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { ToastType } from "../../pages/Home/Home";
 import { LuCheck } from "react-icons/lu";
 import { MdDeleteOutline } from "react-icons/md";
+import { ClipLoader, FadeLoader } from "react-spinners";
 
 type Props = {
   toastDetails: ToastType;
@@ -9,7 +10,7 @@ type Props = {
 };
 
 const Toast = ({ toastDetails, onClose }: Props) => {
-  const { visible, msg, type } = toastDetails;
+  const { visible, msg, type, loading } = toastDetails;
 
   useEffect(() => {
     const timeOutId = setTimeout(() => {
@@ -35,17 +36,23 @@ const Toast = ({ toastDetails, onClose }: Props) => {
         } after:absolute after:left-0 after:top-0 after:rounded-l-lg`}
       >
         <div className="flex items-center gap-3 py-2 px-4">
-          <div
-            className={`w-10 h-10 flex items-center justify-center rounded-full ${
-              type === "delete" ? "bg-red-50" : "bg-green-50"
-            }`}
-          >
-            {type === "delete" ? (
-              <MdDeleteOutline className="text-xl text-red-500" />
-            ) : (
-              <LuCheck className="text-xl text-green-500" />
-            )}
-          </div>
+          {loading ? (
+            <div className="w-10 h-10 flex items-center justify-center">
+              <ClipLoader size={25} />
+            </div>
+          ) : (
+            <div
+              className={`w-10 h-10 flex items-center justify-center rounded-full ${
+                type === "delete" ? "bg-red-50" : "bg-green-50"
+              }`}
+            >
+              {type === "delete" ? (
+                <MdDeleteOutline className="text-xl text-red-500" />
+              ) : (
+                <LuCheck className="text-xl text-green-500" />
+              )}
+            </div>
+          )}
 
           <p className="text-sm text-slate-800">{msg}</p>
         </div>
