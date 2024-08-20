@@ -37,11 +37,12 @@ export const registerUser = async (req: Request, res: Response) => {
 
     await newUser.save();
 
-    const token = jwt.sign({ id: newUser.id }, jwtSecret, { expiresIn: "1h" });
-
+    const accessToken = jwt.sign({ id: newUser.id }, jwtSecret, { expiresIn: "1h" });
+    const refreshToken = jwt.sign({ id: newUser.id }, jwtSecret, { expiresIn: "7d" });
+    
     return res
       .status(201)
-      .json({ error: false, user: { username, email }, token });
+      .json({ error: false, user: { username, email }, token: accessToken, refreshToken });
   } catch (err) {
     return res.status(500).json({ error: true, msg: err });
   }
@@ -74,11 +75,12 @@ export const loginUser = async (req: Request, res: Response) => {
       return res.status(400).json({ error: true, msg: "Incorrect password" });
     }
 
-    const token = jwt.sign({ id: user.id }, jwtSecret, { expiresIn: "1h" });
+    const accessToken = jwt.sign({ id: user.id }, jwtSecret, { expiresIn: "1h" });
+    const refreshToken = jwt.sign({ id: user.id }, jwtSecret, { expiresIn: "7d" });
 
     const {password: _, ...userWithoutPwd} = user.toObject();
 
-    return res.status(200).json({ error: false, user: userWithoutPwd, token });
+    return res.status(200).json({ error: false, user: userWithoutPwd, token: accessToken, refreshToken });
   } catch (err) {
     return res.status(500).json({ error: true, msg: err });
   }
