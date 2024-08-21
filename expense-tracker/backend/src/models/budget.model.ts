@@ -12,7 +12,7 @@ const BudgetSchema: Schema = new Schema({
   user: { type: Schema.Types.ObjectId, required: true },
   amount: { type: Number, required: true },
   category: { type: Schema.Types.ObjectId, required: true },
-  period: { type: String, required: true },
+  period: { type: String, required: true, enum: ["monthly", "yearly"] },
   createdAt: { type: Date, default: Date.now },
 });
 

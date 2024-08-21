@@ -27,7 +27,7 @@ configJwtPassport(passport);
 app.use("/api/auth", UserAuthRouter);
 
 //protected routes
-app.use(checkAuth)
+app.use(checkAuth);
 
 app.use("/api/expense", ExpenseRouter)
 app.use("/api/category", CategoryRouter)

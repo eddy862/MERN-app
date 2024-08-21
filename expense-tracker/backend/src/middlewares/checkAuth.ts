@@ -1,19 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import passport from "passport";
 import { IUser } from "../models/user.model";
-import { JwtPayload } from "jsonwebtoken";
 
-interface IUserPayload extends JwtPayload {
-  _id: string;
-  username: string;
-  email: string
-}
-
-export interface IAuthenticatedRequest extends Request {
-  user: IUserPayload
-}
-
-export const checkAuth = (req: IAuthenticatedRequest, res: Response, next: NextFunction) => {
+export const checkAuth = (req: Request, res: Response, next: NextFunction) => {
   passport.authenticate(
     "jwt",
     { session: false },
@@ -30,7 +19,7 @@ export const checkAuth = (req: IAuthenticatedRequest, res: Response, next: NextF
         return res.status(401).json({ error: true, msg: "Unauthorized" });
       }
 
-      req.user = user as IUserPayload;
+      req.user = user;
       next();
     }
   )(req, res, next);

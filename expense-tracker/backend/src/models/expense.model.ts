@@ -12,7 +12,7 @@ interface IExpense extends Document {
 const ExpenseSchema: Schema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: "User", required: true },
   amount: { type: Number, required: true },
-  description: { type: String },
+  description: { type: String, default: "" },
   category: { type: Schema.Types.ObjectId, ref: "Category", required: true },
   date: { type: Date, default: Date.now },
   createdAt: { type: Date, default: Date.now },
