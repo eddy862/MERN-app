@@ -1,13 +1,59 @@
 import { Request, Response } from "express";
 import Expense from "../models/expense.model";
 import { IUser } from "../models/user.model";
-const {matchedData} = require("express-validator");
+import { generateRecurringExpenses } from "../utils/helpers";
+const { matchedData } = require("express-validator");
 
 export const getAllExpenses = async (req: Request, res: Response) => {
+  const data = matchedData(req);
+  const {
+    startDate,
+    endDate,
+    category,
+    minAmount,
+    maxAmount,
+    page = 1,
+    limit = 10,
+    isRecurring,
+  } = data;
+
   const userId = (req.user as IUser)._id;
 
+  const query: any = { user: userId };
+
+  if (startDate) {
+    query.date = { ...query.date, $gte: new Date(startDate as string) };
+  }
+
+  if (endDate) {
+    query.date = { ...query.date, $lte: new Date(endDate as string) };
+  }
+
+  if (category) {
+    query.category = category;
+  }
+
+  if (minAmount) {
+    query.amount = { ...query.amount, $gte: parseFloat(minAmount as string) };
+  }
+
+  if (maxAmount) {
+    query.amount = { ...query.amount, $lte: parseFloat(maxAmount as string) };
+  }
+
+  if (isRecurring) {
+    query.recurrenceInterval = { $ne: null };
+  }
+
+  const options = {
+    page: parseInt(page as string, 10),
+    limit: parseInt(limit as string, 10),
+    sort: { date: -1 },
+  };
+
   try {
-    const expenses = await Expense.find({ user: userId });
+    await generateRecurringExpenses(userId as string);
+    const expenses = await Expense.paginate(query, options);
     return res.status(200).json({ error: false, expenses });
   } catch {
     return res
@@ -19,7 +65,21 @@ export const getAllExpenses = async (req: Request, res: Response) => {
 export const addNewExpense = async (req: Request, res: Response) => {
   const userId = (req.user as IUser)._id;
   const data = matchedData(req);
-  const { amount, description, category, date } = data;
+  const {
+    amount,
+    description,
+    category,
+    date,
+    recurrenceInterval,
+    recurrenceEndDate,
+  } = data;
+
+  if (!recurrenceInterval && recurrenceEndDate) {
+    return res.status(400).json({
+      error: true,
+      msg: "Recurrence interval is required if end date is provided",
+    });
+  }
 
   try {
     const newExpense = new Expense({
@@ -28,6 +88,8 @@ export const addNewExpense = async (req: Request, res: Response) => {
       description,
       category,
       date,
+      recurrenceInterval,
+      recurrenceEndDate,
     });
 
     await newExpense.save();
@@ -41,27 +103,60 @@ export const addNewExpense = async (req: Request, res: Response) => {
 export const updateExpense = async (req: Request, res: Response) => {
   const userId = (req.user as IUser)._id;
   const data = matchedData(req);
-  const { amount, description, category, date, expenseId } = data;
+  const {
+    amount,
+    description,
+    category,
+    date,
+    expenseId,
+    recurrenceInterval,
+    recurrenceEndDate,
+  } = data;
+
+  if (
+    !(
+      amount ||
+      description ||
+      category ||
+      date ||
+      recurrenceInterval ||
+      recurrenceEndDate
+    )
+  ) {
+    return res.status(400).json({ error: true, msg: "No changes provided" });
+  }
 
   try {
-    const expense = await Expense.findOne({ _id: expenseId, user: userId });
+    const updateData: any = {
+      amount,
+      description,
+      category,
+      date,
+    };
+
+    if (recurrenceInterval !== undefined) {
+      updateData.recurrenceInterval = recurrenceInterval;
+    }
+
+    if (recurrenceEndDate !== undefined) {
+      updateData.recurrenceEndDate = recurrenceEndDate;
+    }
+    
+    const expense = await Expense.findOneAndUpdate(
+      { _id: expenseId, user: userId },
+      updateData,
+      { new: true }
+    );
 
     if (!expense) {
       return res.status(404).json({ error: true, msg: "Expense not found" });
     }
 
-    expense.amount = amount || expense.amount;
-    expense.description = description || expense.description;
-    expense.category = category || expense.category;
-    expense.date = date || expense.date;
-
-    await expense.save();
-
     return res.status(200).json({ error: false, expense });
   } catch {
     return res.status(500).json({ error: true, msg: "Error updating expense" });
   }
-}
+};
 
 export const deleteExpense = async (req: Request, res: Response) => {
   const userId = (req.user as IUser)._id;
@@ -81,4 +176,4 @@ export const deleteExpense = async (req: Request, res: Response) => {
   } catch {
     return res.status(500).json({ error: true, msg: "Error deleting expense" });
   }
-}
+};

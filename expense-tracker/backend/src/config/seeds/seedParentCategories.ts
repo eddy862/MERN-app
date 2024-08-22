@@ -2,7 +2,7 @@ import ParentCategory, {
   IParentCategory,
 } from "../../models/parentCategory.model";
 
-const predefinedParentCategories = [
+const predefinedParentCategories: Partial<IParentCategory>[] = [
   {name: "Food & drink", color: "red"},
   {name: "Shopping", color: "orange"},
   {name: "Entertainment", color: "yellow"},

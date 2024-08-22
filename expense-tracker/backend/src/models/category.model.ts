@@ -11,7 +11,7 @@ export interface ICategory extends Document {
 
 const CategoryScehma: Schema = new Schema({
   name: { type: String, required: true },
-  user: { type: Schema.Types.ObjectId, required: true, ref: "User" },
+  user: { type: Schema.Types.ObjectId, ref: "User" },
   predefined: { type: Boolean, rquired: true, default: false },
   icon: { type: String, required: true },
   parentCategory: {

@@ -8,7 +8,6 @@ export const addCategoryValidator = [
     .isString()
     .withMessage("Icon is required"),
   body("parentCategory")
-    .optional()
-    .isString()
-    .withMessage("Parent category must be a string if provided"),
+    .isMongoId()
+    .withMessage("Parent category ID is invalid"),
 ];

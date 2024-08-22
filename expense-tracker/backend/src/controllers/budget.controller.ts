@@ -41,6 +41,10 @@ export const updateBudget = async (req: Request, res: Response) => {
   const data = matchedData(req);
   const { amount, category, period, budgetId } = data;
 
+  if (!(amount || category | period | budgetId)) {
+    return res.status(400).json({error: true, msg: "No changes provided"})
+  }
+
   try {
     const updatedBudget = await Budget.findOneAndUpdate(
       { _id: budgetId, user: userId },

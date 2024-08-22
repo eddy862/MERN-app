@@ -1,3 +1,4 @@
+import { Schema } from "mongoose";
 import Category, { ICategory } from "../../models/category.model";
 import ParentCategory from "../../models/parentCategory.model";
 
@@ -12,12 +13,22 @@ export const seedCategories = async () => {
       parentCategories.map((category) => [category.name, category._id])
     );
 
-    const foodAndDrinksId = parentCategoryMap.get("Food & drink");
-    const shoppingId = parentCategoryMap.get("Shopping");
-    const entertainmentId = parentCategoryMap.get("Entertainment");
-    const transportId = parentCategoryMap.get("Transportation");
-    const educationId = parentCategoryMap.get("Education");
-    const otherId = parentCategoryMap.get("Other");
+    const foodAndDrinksId = parentCategoryMap.get(
+      "Food & drink"
+    ) as Schema.Types.ObjectId;
+    const shoppingId = parentCategoryMap.get(
+      "Shopping"
+    ) as Schema.Types.ObjectId;
+    const entertainmentId = parentCategoryMap.get(
+      "Entertainment"
+    ) as Schema.Types.ObjectId;
+    const transportId = parentCategoryMap.get(
+      "Transportation"
+    ) as Schema.Types.ObjectId;
+    const educationId = parentCategoryMap.get(
+      "Education"
+    ) as Schema.Types.ObjectId;
+    const otherId = parentCategoryMap.get("Other") as Schema.Types.ObjectId;
 
     if (
       !(
@@ -32,26 +43,91 @@ export const seedCategories = async () => {
       throw new Error("Some parent categories are missing");
     }
 
-    const predefinedCategories = [
-      { name: "Breakfast", parentCategory: foodAndDrinksId },
-      { name: "Lunch", parentCategory: foodAndDrinksId },
-      { name: "Dinner", parentCategory: foodAndDrinksId },
+    const predefinedCategories: Partial<ICategory>[] = [
+      {
+        name: "Breakfast",
+        parentCategory: foodAndDrinksId,
+        icon: "breakfast.png",
+        predefined: true,
+      },
+      {
+        name: "Lunch",
+        parentCategory: foodAndDrinksId,
+        icon: "lunch.png",
+        predefined: true,
+      },
+      {
+        name: "Dinner",
+        parentCategory: foodAndDrinksId,
+        icon: "dinner.png",
+        predefined: true,
+      },
 
-      { name: "Groceries", parentCategories: shoppingId },
-      { name: "Clothing", parentCategories: shoppingId },
+      {
+        name: "Groceries",
+        parentCategory: shoppingId,
+        icon: "groceries.png",
+        predefined: true,
+      },
+      {
+        name: "Clothing",
+        parentCategory: shoppingId,
+        icon: "clothing.png",
+        predefined: true,
+      },
 
-      { name: "Games", parentCategories: entertainmentId },
-      { name: "Movies", parentCategories: entertainmentId },
+      {
+        name: "Games",
+        parentCategory: entertainmentId,
+        icon: "games.png",
+        predefined: true,
+      },
+      {
+        name: "Movies",
+        parentCategory: entertainmentId,
+        icon: "movies.png",
+        predefined: true,
+      },
 
-      { name: "Gas", parentCategories: transportId },
-      { name: "Public Transit", parentCategories: transportId },
+      {
+        name: "Gas",
+        parentCategory: transportId,
+        icon: "gas.png",
+        predefined: true,
+      },
+      {
+        name: "Public Transit",
+        parentCategory: transportId,
+        icon: "public-transit.png",
+        predefined: true,
+      },
 
-      { name: "Tuition", parentCategories: educationId },
-      { name: "Books & Supplies", parentCategories: educationId },
+      {
+        name: "Tuition",
+        parentCategory: educationId,
+        icon: "tuition.png",
+        predefined: true,
+      },
+      {
+        name: "Books & Supplies",
+        parentCategory: educationId,
+        icon: "books.png",
+        predefined: true,
+      },
 
-      { name: "Miscellaneous", parentCategories: otherId },
-      { name: "Donations", parentCategories: otherId },
-    ]; // add icons
+      {
+        name: "Miscellaneous",
+        parentCategory: otherId,
+        icon: "miscellaneous.png",
+        predefined: true,
+      },
+      {
+        name: "Donations",
+        parentCategory: otherId,
+        icon: "donations.png",
+        predefined: true,
+      },
+    ];
 
     await Category.deleteMany({ predefined: true });
     console.log("Predefined categories in the collection cleared");
