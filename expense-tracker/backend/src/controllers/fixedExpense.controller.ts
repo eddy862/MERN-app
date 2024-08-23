@@ -157,6 +157,11 @@ export const updateFixedExpense = async (req: Request, res: Response) => {
       }
     }
 
+    // Reset timesCreated if the fixed expense is not active
+    if (isActive && !fixedExpense.isActive && fixedExpense.timesCreated === fixedExpense.frequency) {
+      fixedExpense.timesCreated = 0;
+    }
+
     await fixedExpense.save();
 
     return res.status(200).json({ error: false, fixedExpense });
