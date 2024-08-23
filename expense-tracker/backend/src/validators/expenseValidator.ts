@@ -28,10 +28,6 @@ export const getExpensesValidator = [
     .optional()
     .isInt({ min: 1 })
     .withMessage("Limit must be greater than 0"),
-  query("isRecurring")
-    .optional()
-    .isBoolean()
-    .withMessage("isRecurring must be a boolean"),
 ];
 
 export const addExpenseValidator = [
@@ -42,15 +38,6 @@ export const addExpenseValidator = [
     .withMessage("Description must be a string if provided"),
   body("category").isMongoId().withMessage("Category ID is invalid"),
   body("date").isISO8601().toDate().withMessage("Date is invalid"),
-  body("recurrenceInterval")
-    .optional()
-    .isIn(["daily", "weekly", "monthly", "yearly"])
-    .withMessage("Recurrence interval is invalid"),
-  body("recurrenceEndDate")
-    .optional()
-    .isISO8601()
-    .toDate()
-    .withMessage("Recurrence end date is invalid"),
 ];
 
 export const updateExpenseValidator = [
@@ -71,15 +58,6 @@ export const updateExpenseValidator = [
     .isISO8601()
     .toDate()
     .withMessage("Date must be valid if provided"),
-  body("recurrenceInterval")
-    .optional({ nullable: true })
-    .isIn(["daily", "weekly", "monthly", "yearly"])
-    .withMessage("Recurrence interval is invalid"),
-  body("recurrenceEndDate")
-    .optional({ nullable: true })
-    .isISO8601()
-    .toDate()
-    .withMessage("Recurrence end date is invalid"),
   param("expenseId").isMongoId().withMessage("Expense ID is invalid"),
 ];
 

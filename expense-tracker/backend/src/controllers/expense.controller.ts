@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import Expense from "../models/expense.model";
 import { IUser } from "../models/user.model";
-import { generateRecurringExpenses } from "../utils/helpers";
 const { matchedData } = require("express-validator");
 
 export const getAllExpenses = async (req: Request, res: Response) => {
@@ -14,7 +13,6 @@ export const getAllExpenses = async (req: Request, res: Response) => {
     maxAmount,
     page = 1,
     limit = 10,
-    isRecurring,
   } = data;
 
   const userId = (req.user as IUser)._id;
@@ -41,10 +39,6 @@ export const getAllExpenses = async (req: Request, res: Response) => {
     query.amount = { ...query.amount, $lte: parseFloat(maxAmount as string) };
   }
 
-  if (isRecurring) {
-    query.recurrenceInterval = { $ne: null };
-  }
-
   const options = {
     page: parseInt(page as string, 10),
     limit: parseInt(limit as string, 10),
@@ -52,7 +46,6 @@ export const getAllExpenses = async (req: Request, res: Response) => {
   };
 
   try {
-    await generateRecurringExpenses(userId as string);
     const expenses = await Expense.paginate(query, options);
     return res.status(200).json({ error: false, expenses });
   } catch {
@@ -103,48 +96,16 @@ export const addNewExpense = async (req: Request, res: Response) => {
 export const updateExpense = async (req: Request, res: Response) => {
   const userId = (req.user as IUser)._id;
   const data = matchedData(req);
-  const {
-    amount,
-    description,
-    category,
-    date,
-    expenseId,
-    recurrenceInterval,
-    recurrenceEndDate,
-  } = data;
+  const { amount, description, category, date, expenseId } = data;
 
-  if (
-    !(
-      amount ||
-      description ||
-      category ||
-      date ||
-      recurrenceInterval ||
-      recurrenceEndDate
-    )
-  ) {
+  if (!(amount || description || category || date)) {
     return res.status(400).json({ error: true, msg: "No changes provided" });
   }
 
   try {
-    const updateData: any = {
-      amount,
-      description,
-      category,
-      date,
-    };
-
-    if (recurrenceInterval !== undefined) {
-      updateData.recurrenceInterval = recurrenceInterval;
-    }
-
-    if (recurrenceEndDate !== undefined) {
-      updateData.recurrenceEndDate = recurrenceEndDate;
-    }
-    
     const expense = await Expense.findOneAndUpdate(
       { _id: expenseId, user: userId },
-      updateData,
+      { amount, description, category, date },
       { new: true }
     );
 
