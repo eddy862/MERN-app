@@ -1,6 +1,6 @@
 const { body, param, query } = require("express-validator");
 
-export const getExpensesValidator = [
+export const getTransactionValidator = [
   query("startDate")
     .optional()
     .isISO8601()
@@ -28,19 +28,26 @@ export const getExpensesValidator = [
     .optional()
     .isInt({ min: 1 })
     .withMessage("Limit must be greater than 0"),
+  query("type")
+    .optional()
+    .isIn(["expense", "income"])
+    .withMessage("Type must be either expense or income"),
 ];
 
-export const addExpenseValidator = [
+export const addTransactionValidator = [
   body("amount").isNumeric().withMessage("Amount is required"),
+  body("type")
+    .isIn(["expense", "income"])
+    .withMessage("Type must be either expense or income"),
   body("description")
     .optional()
     .isString()
     .withMessage("Description must be a string if provided"),
   body("category").isMongoId().withMessage("Category ID is invalid"),
-  body("date").isISO8601().toDate().withMessage("Date is invalid"),
+  body("date").optional().isISO8601().toDate().withMessage("Date is invalid"),
 ];
 
-export const updateExpenseValidator = [
+export const updateTransactionValidator = [
   body("amount")
     .optional()
     .isNumeric()
@@ -58,9 +65,9 @@ export const updateExpenseValidator = [
     .isISO8601()
     .toDate()
     .withMessage("Date must be valid if provided"),
-  param("expenseId").isMongoId().withMessage("Expense ID is invalid"),
+  param("transactionId").isMongoId().withMessage("Transaction ID is invalid"),
 ];
 
-export const deleteExpenseValidator = [
-  param("expenseId").isMongoId().withMessage("Expense ID is invalid"),
+export const deleteTransactionValidator = [
+  param("transactionId").isMongoId().withMessage("Transaction ID is invalid"),
 ];

@@ -1,8 +1,10 @@
-import FixedExpense from "../models/fixedExpense.model";
-import Expense from "../models/expense.model";
+import FixedExpense from "../models/fixedItem.model";
+import Transaction from "../models/transaction.model";
 
-export const processFixedExpenses = async (userId?: string) => {
-  const query: any = userId ? { user: userId, isActive: true } : { isActive: true };
+export const processFixedItems = async (userId?: string) => {
+  const query: any = userId
+    ? { user: userId, isActive: true }
+    : { isActive: true };
 
   const fixedExpenses = await FixedExpense.find(query);
   const today = new Date();
@@ -10,26 +12,26 @@ export const processFixedExpenses = async (userId?: string) => {
   const dayOfMonth = today.getDate();
 
   for (const fixedExpense of fixedExpenses) {
-    const shouldProcessToday = 
-      fixedExpense.recentCreatedDate === null || 
+    const shouldProcessToday =
+      fixedExpense.recentCreatedDate === null ||
       !isSameDay(fixedExpense.recentCreatedDate, today);
 
     if (shouldProcessToday && new Date(fixedExpense.startDate) <= today) {
-      const canCreateExpense = 
-        fixedExpense.frequency === "unlimited" || 
+      const canCreateExpense =
+        fixedExpense.frequency === "unlimited" ||
         fixedExpense.timesCreated < fixedExpense.frequency;
 
       if (canCreateExpense) {
-        const isWeeklyExpenseToday = 
-          fixedExpense.period === "weekly" && 
+        const isWeeklyExpenseToday =
+          fixedExpense.period === "weekly" &&
           fixedExpense.daysOfWeek?.includes(dayOfWeek);
 
-        const isMonthlyExpenseToday = 
-          fixedExpense.period === "monthly" && 
+        const isMonthlyExpenseToday =
+          fixedExpense.period === "monthly" &&
           fixedExpense.daysOfMonth?.includes(dayOfMonth);
 
         if (isWeeklyExpenseToday || isMonthlyExpenseToday) {
-          await createExpense(fixedExpense);
+          await createTransaction(fixedExpense);
           fixedExpense.timesCreated++;
         }
 
@@ -41,10 +43,11 @@ export const processFixedExpenses = async (userId?: string) => {
   }
 };
 
-const createExpense = async (fixedExpense: any) => {
-  const newExpense = new Expense({
+const createTransaction = async (fixedExpense: any) => {
+  const newExpense = new Transaction({
     user: fixedExpense.user,
     amount: fixedExpense.amount,
+    type: fixedExpense.type,
     description: fixedExpense.description,
     category: fixedExpense.category,
   });

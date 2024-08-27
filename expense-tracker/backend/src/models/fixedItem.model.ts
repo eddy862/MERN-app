@@ -1,9 +1,10 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-export interface IFixedExpense extends Document {
+export interface IFixedItem extends Document {
   user: mongoose.Types.ObjectId;
   amount: number;
   description: string;
+  type: "expense" | "income";
   category: mongoose.Types.ObjectId;
   frequency: number | "unlimited";
   timesCreated: number;
@@ -16,10 +17,11 @@ export interface IFixedExpense extends Document {
   createdAt: Date;
 }
 
-const FixedExpenseSchema: Schema = new Schema({
+const FixedItemSchema: Schema = new Schema({
   user: { type: mongoose.Types.ObjectId, ref: "User", required: true },
   amount: { type: Number, required: true },
-  description: { type: String, required: true },
+  description: { type: String, default: "" },
+  type: { type: String, enum: ["expense", "income"], required: true },
   category: { type: mongoose.Types.ObjectId, ref: "Category", required: true },
   frequency: {
     type: Schema.Types.Mixed,
@@ -43,7 +45,7 @@ const FixedExpenseSchema: Schema = new Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-export default mongoose.model<IFixedExpense>(
-  "FixedExpense",
-  FixedExpenseSchema
+export default mongoose.model<IFixedItem>(
+  "FixedItem",
+  FixedItemSchema
 );

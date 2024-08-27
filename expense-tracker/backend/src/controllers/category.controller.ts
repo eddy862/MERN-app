@@ -6,7 +6,7 @@ const { matchedData } = require("express-validator");
 export const addCategory = async (req: Request, res: Response) => {
   const userId = (req.user as IUser)._id;
   const data = matchedData(req);
-  const { name, icon, parentCategory } = data;
+  const { name, icon, parentCategory, type } = data;
 
   try {
     const newCategory = new Category({
@@ -15,6 +15,7 @@ export const addCategory = async (req: Request, res: Response) => {
       icon,
       user: userId,
       predefined: false,
+      type,
     });
 
     await newCategory.save();

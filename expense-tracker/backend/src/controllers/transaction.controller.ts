@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import Expense from "../models/expense.model";
+import Transaction from "../models/transaction.model";
 import { IUser } from "../models/user.model";
 const { matchedData } = require("express-validator");
 
-export const getAllExpenses = async (req: Request, res: Response) => {
+export const getAllTransaction = async (req: Request, res: Response) => {
   const data = matchedData(req);
   const {
     startDate,
@@ -13,6 +13,7 @@ export const getAllExpenses = async (req: Request, res: Response) => {
     maxAmount,
     page = 1,
     limit = 10,
+    type,
   } = data;
 
   const userId = (req.user as IUser)._id;
@@ -39,6 +40,10 @@ export const getAllExpenses = async (req: Request, res: Response) => {
     query.amount = { ...query.amount, $lte: parseFloat(maxAmount as string) };
   }
 
+  if (type) {
+    query.type = type;
+  }
+
   const options = {
     page: parseInt(page as string, 10),
     limit: parseInt(limit as string, 10),
@@ -46,94 +51,85 @@ export const getAllExpenses = async (req: Request, res: Response) => {
   };
 
   try {
-    const expenses = await Expense.paginate(query, options);
-    return res.status(200).json({ error: false, expenses });
+    const transactions = await Transaction.paginate(query, options);
+    return res.status(200).json({ error: false, transactions });
   } catch {
     return res
       .status(500)
-      .json({ error: true, msg: "Error fetching expenses" });
+      .json({ error: true, msg: "Error fetching transactions" });
   }
 };
 
-export const addNewExpense = async (req: Request, res: Response) => {
+export const addNewTransaction = async (req: Request, res: Response) => {
   const userId = (req.user as IUser)._id;
   const data = matchedData(req);
   const {
     amount,
+    type,
     description,
     category,
     date,
-    recurrenceInterval,
-    recurrenceEndDate,
   } = data;
 
-  if (!recurrenceInterval && recurrenceEndDate) {
-    return res.status(400).json({
-      error: true,
-      msg: "Recurrence interval is required if end date is provided",
-    });
-  }
-
   try {
-    const newExpense = new Expense({
+    const newTransaction = new Transaction({
       user: userId,
       amount,
+      type,
       description,
       category,
       date,
-      recurrenceInterval,
-      recurrenceEndDate,
     });
 
-    await newExpense.save();
+    await newTransaction.save();
 
-    return res.status(201).json({ error: false, expense: newExpense });
+    return res.status(201).json({ error: false, transaction: newTransaction });
   } catch {
-    return res.status(500).json({ error: true, msg: "Error adding expense" });
+    return res.status(500).json({ error: true, msg: "Error adding transaction" });
   }
 };
 
-export const updateExpense = async (req: Request, res: Response) => {
+export const updateTransaction = async (req: Request, res: Response) => {
   const userId = (req.user as IUser)._id;
   const data = matchedData(req);
-  const { amount, description, category, date, expenseId } = data;
+  const { amount, description, category, date, transactionId } = data;
 
   if (!(amount || description || category || date)) {
     return res.status(400).json({ error: true, msg: "No changes provided" });
   }
 
   try {
-    const expense = await Expense.findOneAndUpdate(
-      { _id: expenseId, user: userId },
+    const transaction = await Transaction.findOneAndUpdate(
+      { _id: transactionId, user: userId },
       { amount, description, category, date },
       { new: true }
     );
 
-    if (!expense) {
-      return res.status(404).json({ error: true, msg: "Expense not found" });
+    if (!transaction) {
+      return res.status(404).json({ error: true, msg: "Transaction not found" });
     }
 
-    return res.status(200).json({ error: false, expense });
+    return res.status(200).json({ error: false, transaction });
   } catch {
-    return res.status(500).json({ error: true, msg: "Error updating expense" });
+    return res.status(500).json({ error: true, msg: "Error updating transaction" });
   }
 };
 
-export const deleteExpense = async (req: Request, res: Response) => {
+export const deleteTransaction = async (req: Request, res: Response) => {
   const userId = (req.user as IUser)._id;
-  const { expenseId } = matchedData(req);
+  const { transactionId } = matchedData(req);
 
   try {
-    const deletedExpense = await Expense.findOneAndDelete({
-      _id: expenseId,
+    const deletedTran = await Transaction.findOneAndDelete({
+      _id: transactionId,
       user: userId,
     });
 
-    if (!deletedExpense) {
-      return res.status(404).json({ error: true, msg: "Expense not found" });
+    if (!deletedTran) {
+      return res.status(404).json({ error: true, msg: "Transaction not found" });
     }
 
-    return res.status(200).json({ error: false, expense: deletedExpense });
+    return res.status(200).json({ error: false, transaction: deletedTran });
   } catch {
     return res.status(500).json({ error: true, msg: "Error deleting expense" });
   }

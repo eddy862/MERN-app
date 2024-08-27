@@ -18,7 +18,7 @@ export const getAllBudgets = async (req: Request, res: Response) => {
 export const addBudget = async (req: Request, res: Response) => {
   const userId = (req.user as IUser)._id;
   const data = matchedData(req);
-  const { amount, category, period } = data;
+  const { amount, category, period, startDate, endDate } = data;
 
   try {
     const newBudget = new Budget({
@@ -26,6 +26,8 @@ export const addBudget = async (req: Request, res: Response) => {
       amount,
       category,
       period,
+      startDate,
+      endDate,
     });
 
     await newBudget.save();
@@ -39,16 +41,16 @@ export const addBudget = async (req: Request, res: Response) => {
 export const updateBudget = async (req: Request, res: Response) => {
   const userId = (req.user as IUser)._id;
   const data = matchedData(req);
-  const { amount, category, period, budgetId } = data;
+  const { amount, category, period, budgetId, startDate, endDate } = data;
 
   if (!(amount || category | period | budgetId)) {
-    return res.status(400).json({error: true, msg: "No changes provided"})
+    return res.status(400).json({ error: true, msg: "No changes provided" });
   }
 
   try {
     const updatedBudget = await Budget.findOneAndUpdate(
       { _id: budgetId, user: userId },
-      { amount, category, period },
+      { amount, category, period, startDate, endDate },
       { new: true }
     );
 

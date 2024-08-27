@@ -49,18 +49,21 @@ export const seedCategories = async () => {
         parentCategory: foodAndDrinksId,
         icon: "breakfast.png",
         predefined: true,
+        type: "expense",
       },
       {
         name: "Lunch",
         parentCategory: foodAndDrinksId,
         icon: "lunch.png",
         predefined: true,
+        type: "expense",
       },
       {
         name: "Dinner",
         parentCategory: foodAndDrinksId,
         icon: "dinner.png",
         predefined: true,
+        type: "expense",
       },
 
       {
@@ -68,12 +71,14 @@ export const seedCategories = async () => {
         parentCategory: shoppingId,
         icon: "groceries.png",
         predefined: true,
+        type: "expense",
       },
       {
         name: "Clothing",
         parentCategory: shoppingId,
         icon: "clothing.png",
         predefined: true,
+        type: "expense",
       },
 
       {
@@ -81,12 +86,14 @@ export const seedCategories = async () => {
         parentCategory: entertainmentId,
         icon: "games.png",
         predefined: true,
+        type: "expense",
       },
       {
         name: "Movies",
         parentCategory: entertainmentId,
         icon: "movies.png",
         predefined: true,
+        type: "expense",
       },
 
       {
@@ -94,12 +101,14 @@ export const seedCategories = async () => {
         parentCategory: transportId,
         icon: "gas.png",
         predefined: true,
+        type: "expense",
       },
       {
         name: "Public Transit",
         parentCategory: transportId,
         icon: "public-transit.png",
         predefined: true,
+        type: "expense",
       },
 
       {
@@ -107,12 +116,14 @@ export const seedCategories = async () => {
         parentCategory: educationId,
         icon: "tuition.png",
         predefined: true,
+        type: "expense",
       },
       {
         name: "Books & Supplies",
         parentCategory: educationId,
         icon: "books.png",
         predefined: true,
+        type: "expense",
       },
 
       {
@@ -120,12 +131,14 @@ export const seedCategories = async () => {
         parentCategory: otherId,
         icon: "miscellaneous.png",
         predefined: true,
+        type: "expense",
       },
       {
         name: "Donations",
         parentCategory: otherId,
         icon: "donations.png",
         predefined: true,
+        type: "expense",
       },
     ];
 

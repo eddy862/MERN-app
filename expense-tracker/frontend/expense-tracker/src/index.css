@@ -1,4 +1,35 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  html {
+    font-family: "Nunito", sans-serif;
+    height: 100vh;
+  }
+
+  body {
+    background-color: #fdfeff;
+    overflow-x: hidden;
+  }
+}
+
+@layer components {
+  .input-box1 {
+    @apply outline-none bg-slate-100 text-slate-700 text-sm px-3 py-2 rounded-full;
+  }
+
+  .btn-primary {
+    @apply bg-purple-600 text-white p-2 rounded-full w-full hover:bg-purple-400;
+  }
+
+  .error-text {
+    @apply text-red-500 text-xs font-semibold;
+  }
+
+  .required-label {
+    @apply after:content-['*'] after:text-red-500 after:ml-0.5;
+  }
+}

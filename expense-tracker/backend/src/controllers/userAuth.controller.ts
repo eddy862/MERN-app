@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 const { matchedData } = require("express-validator");
-import User, { IUser } from "../models/user.model";
+import User, { ILocalUser } from "../models/user.model";
 import jwt from "jsonwebtoken";
-import { comparePassword, hashedPassword } from "../utils/helpers";
+import { comparePassword, hashedPassword, isLocalUser } from "../utils/helpers";
 
 const jwtSecret = process.env.JWT_SECRET_KEY;
 
@@ -23,7 +23,7 @@ export const registerUser = async (req: Request, res: Response) => {
         .json({ error: true, msg: "Username already exists." });
     }
 
-    const findUser2 = await User.findOne({ email });
+    const findUser2 = await User.findOne({ email, googleId: { $exists: false } });
 
     if (findUser2) {
       return res
@@ -31,7 +31,7 @@ export const registerUser = async (req: Request, res: Response) => {
         .json({ error: true, msg: "Email address already exists." });
     }
 
-    const newUser = new User({ username, email, password });
+    const newUser = new User({ username, email, password }) as ILocalUser;
 
     newUser.password = await hashedPassword(newUser.password);
 
@@ -62,10 +62,11 @@ export const loginUser = async (req: Request, res: Response) => {
     const user = await User.findOne(
       {
         $or: [{ username }, { email }],
+        googleId: { $exists: false },
       }
     );
 
-    if (!user) {
+    if (!user || !isLocalUser(user)) {
       return res
         .status(400)
         .json({ error: true, msg: "Either email or username doesn't exist" });
@@ -85,3 +86,11 @@ export const loginUser = async (req: Request, res: Response) => {
     return res.status(500).json({ error: true, msg: err });
   }
 };
+
+export const googleCallback  = async (req: Request, res: Response) => {
+  const user = req.user as { id: string };
+  const accessToken = jwt.sign({ id: user.id }, jwtSecret, { expiresIn: "1h" });
+  const refreshToken = jwt.sign({ id: user.id }, jwtSecret, { expiresIn: "7d" });
+
+  return res.status(200).json({ error: false, user, token: accessToken, refreshToken });
+}
