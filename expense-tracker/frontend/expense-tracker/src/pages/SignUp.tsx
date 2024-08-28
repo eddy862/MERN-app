@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import UserAuth from "../layouts/UserAuth";
-import ThirdpartySignup from "../components/ThirdpartySignup";
+import ThirdpartySignup from "../components/UserAuth/ThirdpartySignup";
 import { validatePassword, verifyEmail } from "../utils/helper";
 import { isAxiosError } from "axios";
 import axiosInstance from "../utils/axiosInstance";

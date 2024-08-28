@@ -1,6 +1,6 @@
 import React from 'react'
-import googleIcon from "../assets/google-icon.svg";
-import { BASE_URL } from '../utils/constant';
+import googleIcon from "../../assets/google-icon.svg";
+import { BASE_URL } from '../../utils/constant';
 
 type Props = {
   method: "login" | "signup";

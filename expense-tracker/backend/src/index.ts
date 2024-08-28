@@ -8,6 +8,7 @@ import TransactionRouter from "./routes/transaction.route";
 import CategoryRouter from "./routes/category.route";
 import BudgetRouter from "./routes/budget.route";
 import FixedExpenseRouter from "./routes/fixedItem.route";
+import UserRouter from "./routes/user.route";
 import passport from "passport";
 import configJwtPassport from "./config/strategies/jwt-strategy";
 import configGooglePassport from "./config/strategies/google-strategy";
@@ -42,6 +43,7 @@ app.use("/api/transaction", TransactionRouter);
 app.use("/api/category", CategoryRouter);
 app.use("/api/budget", BudgetRouter);
 app.use("/api/fixedItem", FixedExpenseRouter);
+app.use("/api/user", UserRouter);
 
 const PORT = 5000;
 
