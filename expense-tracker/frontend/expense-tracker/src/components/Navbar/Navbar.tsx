@@ -1,18 +1,13 @@
-import React, { useState } from "react";
-import {
-  extractInitials,
-  isGoogleUser,
-  isLocalUser,
-} from "./../../utils/helper";
+import React from "react";
+import { isGoogleUser, isLocalUser } from "./../../utils/helper";
 import useUser from "../../hooks/useUser";
 import { IGoogleUser, ILocalUser } from "../../types/user";
-import UserDetails from "./UserDetails";
+import Avatar from "./Avatar";
 
 type Props = {};
 
-const Navbar = (props: Props) => {
+const Navbar: React.FC<Props> = (props) => {
   const user = useUser();
-  const [isNameHovered, setIsNameHovered] = useState(false);
   let googleUser: IGoogleUser | null = null;
   let localUser: ILocalUser | null = null;
 
@@ -32,20 +27,7 @@ const Navbar = (props: Props) => {
       </h1>
 
       <div>
-        <div
-          className="bg-slate-200 w-10 h-10 rounded-full flex justify-center items-center relative"
-          onMouseEnter={() => setIsNameHovered(true)}
-          onMouseLeave={() => setIsNameHovered(false)}
-        >
-          <span>
-            {localUser
-              ? extractInitials(localUser.username)
-              : googleUser
-              ? extractInitials(googleUser.displayName)
-              : ""}
-          </span>
-          <UserDetails {...{ localUser, googleUser, isNameHovered }} />
-        </div>
+        <Avatar localUser={localUser} googleUser={googleUser} />
       </div>
     </div>
   );

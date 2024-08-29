@@ -14,6 +14,7 @@ export const getAllTransaction = async (req: Request, res: Response) => {
     page = 1,
     limit = 10,
     type,
+    groupByDate,
   } = data;
 
   const userId = (req.user as IUser)._id;
@@ -44,14 +45,28 @@ export const getAllTransaction = async (req: Request, res: Response) => {
     query.type = type;
   }
 
-  const options = {
-    page: parseInt(page as string, 10),
-    limit: parseInt(limit as string, 10),
-    sort: { date: -1 },
-  };
-
   try {
-    const transactions = await Transaction.paginate(query, options);
+    let transactions;
+    if (groupByDate) {
+      transactions = await Transaction.aggregate([
+        { $match: query },
+        {
+          $group: {
+            _id: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+            transactions: { $push: "$$ROOT" },
+          },
+        },
+        { $sort: { _id: -1 } },
+        { $skip: (page - 1) * limit },
+        { $limit: limit },
+      ]);
+    } else {
+      transactions = await Transaction.find(query)
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .sort({ date: -1 });
+    }
+
     return res.status(200).json({ error: false, transactions });
   } catch {
     return res
@@ -63,13 +78,7 @@ export const getAllTransaction = async (req: Request, res: Response) => {
 export const addNewTransaction = async (req: Request, res: Response) => {
   const userId = (req.user as IUser)._id;
   const data = matchedData(req);
-  const {
-    amount,
-    type,
-    description,
-    category,
-    date,
-  } = data;
+  const { amount, type, description, category, date } = data;
 
   try {
     const newTransaction = new Transaction({
@@ -85,7 +94,9 @@ export const addNewTransaction = async (req: Request, res: Response) => {
 
     return res.status(201).json({ error: false, transaction: newTransaction });
   } catch {
-    return res.status(500).json({ error: true, msg: "Error adding transaction" });
+    return res
+      .status(500)
+      .json({ error: true, msg: "Error adding transaction" });
   }
 };
 
@@ -106,12 +117,16 @@ export const updateTransaction = async (req: Request, res: Response) => {
     );
 
     if (!transaction) {
-      return res.status(404).json({ error: true, msg: "Transaction not found" });
+      return res
+        .status(404)
+        .json({ error: true, msg: "Transaction not found" });
     }
 
     return res.status(200).json({ error: false, transaction });
   } catch {
-    return res.status(500).json({ error: true, msg: "Error updating transaction" });
+    return res
+      .status(500)
+      .json({ error: true, msg: "Error updating transaction" });
   }
 };
 
@@ -126,7 +141,9 @@ export const deleteTransaction = async (req: Request, res: Response) => {
     });
 
     if (!deletedTran) {
-      return res.status(404).json({ error: true, msg: "Transaction not found" });
+      return res
+        .status(404)
+        .json({ error: true, msg: "Transaction not found" });
     }
 
     return res.status(200).json({ error: false, transaction: deletedTran });

@@ -1,7 +1,7 @@
 import { Icon } from "@icon-park/react/lib/runtime";
 import React, { useState } from "react";
 import { Link, LinkProps } from "react-router-dom";
-import CustomTooltip from "./CustomTooltip";
+import CustomTooltip from "../CustomTooltip";
 
 type Props = {
   title: string;

@@ -1,13 +1,13 @@
 import { Logout } from "@icon-park/react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import CustomTooltip from "./CustomTooltip";
+import CustomTooltip from "../CustomTooltip";
 
 type Props = {
   isSidebarOpen: boolean;
 };
 
-const LogoutButton = ({isSidebarOpen}: Props) => {
+const LogoutButton = ({ isSidebarOpen }: Props) => {
   const navigate = useNavigate();
 
   const onLogout = () => {
@@ -18,7 +18,11 @@ const LogoutButton = ({isSidebarOpen}: Props) => {
 
   return (
     <>
-      <CustomTooltip title="Logout" placement="right" isEnabled={!isSidebarOpen}>
+      <CustomTooltip
+        title="Logout"
+        placement="right"
+        isEnabled={!isSidebarOpen}
+      >
         <div
           className={`gap-3 text-sm p-2 cursor-pointer hover:bg-slate-100 ${
             isSidebarOpen ? "rounded flex" : "rounded-full inline-flex"

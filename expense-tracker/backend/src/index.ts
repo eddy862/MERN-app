@@ -39,10 +39,10 @@ app.use("/api/auth", UserAuthRouter);
 //protected routes
 app.use(checkAuth);
 
-app.use("/api/transaction", TransactionRouter);
-app.use("/api/category", CategoryRouter);
-app.use("/api/budget", BudgetRouter);
-app.use("/api/fixedItem", FixedExpenseRouter);
+app.use("/api/transactions", TransactionRouter);
+app.use("/api/categories", CategoryRouter);
+app.use("/api/budgets", BudgetRouter);
+app.use("/api/fixedItems", FixedExpenseRouter);
 app.use("/api/user", UserRouter);
 
 const PORT = 5000;

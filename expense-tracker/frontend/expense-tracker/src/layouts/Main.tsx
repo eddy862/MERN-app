@@ -22,7 +22,7 @@ const Main = ({ children }: Props) => {
 
       <Sidebar isOpen={isSidebarOpen} />
 
-      <div className="bg-slate-100 flex-1">
+      <div className="bg-slate-100 flex-1 relative">
         <Navbar  />
         <div className="px-4 py-2">{children}</div>
       </div>
