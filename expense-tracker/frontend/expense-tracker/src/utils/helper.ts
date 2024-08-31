@@ -30,3 +30,7 @@ export const isGoogleUser = (user: unknown): user is IGoogleUser => {
   }
   return (user as IGoogleUser).googleId !== undefined;
 };
+
+export const toCurrency = (amount: number) => {
+  return amount.toFixed(2);
+};

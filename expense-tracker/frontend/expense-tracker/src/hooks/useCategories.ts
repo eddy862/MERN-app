@@ -1,30 +1,35 @@
 import { useState, useEffect } from "react";
 import { ICategory } from "../types/categories";
 import { useNavigate } from "react-router-dom";
-import fetchCategories from "../services/fetchCategories";
+import axiosInstance from "../utils/axiosInstance";
+import { isAxiosError } from "axios";
 
 const useCategories = () => {
   const [categories, setCategories] = useState<ICategory[]>([]);
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchCtgs = async () => {
-      try {
-        const response = await fetchCategories(navigate);
+  const fetchCategories = async () => {
+    try {
+      const response = await axiosInstance.get("/api/categories");
 
-        if (response) {
-          setCategories(response);
-        }
-      } catch (error) {
-        console.error(error);
+      if (response.data && response.data.categories) {
+        setCategories(response.data.categories as ICategory[]);
       }
-    };
+    } catch (error) {
+      if (isAxiosError(error)) {
+        if (error.response && error.response.status === 401) {
+          navigate("/login");
+        }
+      }
+    }
+  };
 
-    fetchCtgs();
+  useEffect(() => {
+    fetchCategories();
   }, []);
 
-  return { categories };
+  return { categories, fetchCategories };
 };
 
 export default useCategories;

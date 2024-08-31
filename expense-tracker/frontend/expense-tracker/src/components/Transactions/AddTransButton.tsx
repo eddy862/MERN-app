@@ -8,7 +8,7 @@ type Props = {
 
 const AddTransButton = ({ toggleModal }: Props) => {
   return (
-    <div className="absolute bottom-6 right-8 cursor-pointer">
+    <div className="absolute bottom-6 right-8 cursor-pointer hover:scale-105 transform transition-transform">
       <CustomTooltip title="Add Transaction" placement="left">
         <AddOne
           theme="filled"

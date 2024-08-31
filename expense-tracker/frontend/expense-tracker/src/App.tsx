@@ -11,14 +11,20 @@ type Props = {}
 const App = (props: Props) => {
   return (
     <Router>
-      <CategoryProvider>
-        <Routes>
-          <Route path='/login' element={<Login/>}/>
-          <Route path='/signup' element={<SignUp/>}/>
-          <Route path='/dashboard' element={<Dashboard/>}/>
-          <Route path='/transactions' element={<Transactions/>}/>
-        </Routes>
-      </CategoryProvider>
+      <Routes>
+        <Route path='/login' element={<Login/>}/>
+        <Route path='/signup' element={<SignUp/>}/>
+        <Route path='/dashboard' element={
+          <CategoryProvider>
+            <Dashboard/>
+          </CategoryProvider>
+        }/>
+        <Route path='/transactions' element={
+          <CategoryProvider>
+            <Transactions/>
+          </CategoryProvider>
+        }/>
+      </Routes>
     </Router>
   )
 }

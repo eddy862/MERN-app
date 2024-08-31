@@ -16,8 +16,10 @@ export type IModal = {
 Modal.setAppElement("#root");
 
 const Transactions = (props: Props) => {
-  const { transactionGroups, loading } = UseTransactionGroups({});
-  const [isModalOpen, setIsModalOpen] = useState<IModal>({ isOpen: false });
+  const { transactionGroups, loading, fetchTransGroups } = UseTransactionGroups({});
+  const [isModalOpen, setIsModalOpen] = useState<IModal>({
+    isOpen: false,
+  });
 
   return (
     <Main>
@@ -27,19 +29,27 @@ const Transactions = (props: Props) => {
       />
 
       <AddTransButton
-        toggleModal={() => setIsModalOpen({ type: "add", isOpen: true })}
+        toggleModal={() =>
+          setIsModalOpen((prev) => ({ ...prev, type: "add", isOpen: true }))
+        }
       />
 
       <Modal
         isOpen={isModalOpen.isOpen}
-        onRequestClose={() => setIsModalOpen({ isOpen: false })}
+        onRequestClose={() =>
+          setIsModalOpen((prev) => ({ ...prev, isOpen: false }))
+        }
         contentLabel="Example Modal"
         style={{
           overlay: { backgroundColor: "rgba(0, 0, 0, 0.5)" },
         }}
-        className="w-[70%] md:w-[60%] lg:w-[50%] xl:w-[40%] 2xl:w-[35%] max-h-3/4 bg-white mx-auto mt-28 rounded-md outline-none p-3"
+        className="w-[70%] md:w-[60%] lg:w-[50%] xl:w-[40%] 2xl:w-[35%] max-h-3/4 bg-white mx-auto mt-28 rounded-md outline-none px-3 py-4"
       >
-        <AddTransInner isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
+        <AddTransInner
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+          fetchTransactionGroups={fetchTransGroups}
+        />
       </Modal>
     </Main>
   );

@@ -1,6 +1,7 @@
 import React from "react";
 import { ITransactionGroup } from "../../types/transactions";
 import TransactionItem from "./TransactionItem";
+import { toCurrency } from "../../utils/helper";
 
 type Props = {
   group: ITransactionGroup;
@@ -34,7 +35,7 @@ const TransactionGroup = ({ group }: Props) => {
               : "text-slate-500"
           }`}
         >
-          RM {totalTransactionAmount}
+          RM {toCurrency(totalTransactionAmount)}
         </p>
       </div>
       <ul className="divide-y-2 px-3">
