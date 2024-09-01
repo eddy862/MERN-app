@@ -5,12 +5,14 @@ import AddTransButton from "../components/Transactions/AddTransButton";
 import UseTransactionGroups from "../hooks/useTransactionGroups";
 import Modal from "react-modal";
 import AddTransInner from "../components/Transactions/AddTransInner";
+import { ITransaction } from "../types/transactions";
 
 type Props = {};
 
 export type IModal = {
   type?: "add" | "edit";
   isOpen: boolean;
+  selectedTrans?: ITransaction;
 };
 
 Modal.setAppElement("#root");
@@ -26,6 +28,7 @@ const Transactions = (props: Props) => {
       <TransactionArea
         transactionGroups={transactionGroups}
         loading={loading}
+        setIsModalOpen={setIsModalOpen}
       />
 
       <AddTransButton
@@ -43,7 +46,7 @@ const Transactions = (props: Props) => {
         style={{
           overlay: { backgroundColor: "rgba(0, 0, 0, 0.5)" },
         }}
-        className="w-[70%] md:w-[60%] lg:w-[50%] xl:w-[40%] 2xl:w-[35%] max-h-3/4 bg-white mx-auto mt-28 rounded-md outline-none px-3 py-4"
+        className="w-[70%] md:w-[60%] lg:w-[50%] xl:w-[40%] 2xl:w-[35%] max-h-3/4 bg-white mx-auto mt-20 rounded-md outline-none px-3 py-4"
       >
         <AddTransInner
           isModalOpen={isModalOpen}

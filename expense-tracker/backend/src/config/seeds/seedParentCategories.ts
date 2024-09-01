@@ -3,12 +3,16 @@ import ParentCategory, {
 } from "../../models/parentCategory.model";
 
 const predefinedParentCategories: Partial<IParentCategory>[] = [
-  {name: "Food & drink", color: "red"},
-  {name: "Shopping", color: "orange"},
-  {name: "Entertainment", color: "yellow"},
-  {name: "Transportation", color: "green"},
-  {name: "Education", color: "pink"},
-  {name: "Other", color: "gray"},
+  {name: "Food & drink", type: "expense"},
+  {name: "Shopping", type: "expense"},
+  {name: "Entertainment", type: "expense"},
+  {name: "Transportation", type: "expense"},
+  {name: "Education", type: "expense"},
+  {name: "Other", type: "expense"},
+  {name: "Salary", type: "income"},
+  {name: "Business", type: "income"},
+  {name: "Investment", type: "income"},
+  {name: "Other", type: "income"},
 ];
 
 export const seedParentCategories = async () => {

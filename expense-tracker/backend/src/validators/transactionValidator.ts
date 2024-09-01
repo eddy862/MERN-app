@@ -52,6 +52,10 @@ export const addTransactionValidator = [
 ];
 
 export const updateTransactionValidator = [
+  body("type")
+    .optional()
+    .isIn(["expense", "income"])
+    .withMessage("Type must be either expense or income"),
   body("amount")
     .optional()
     .isNumeric()

@@ -5,7 +5,7 @@ export interface ITransaction {
   type: "expense" | "income";
   description: string;
   category: string;
-  date: Date;
+  date: string;
   createdAt: Date;
 }
 

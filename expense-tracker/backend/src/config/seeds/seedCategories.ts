@@ -10,25 +10,43 @@ export const seedCategories = async () => {
     }
 
     const parentCategoryMap = new Map(
-      parentCategories.map((category) => [category.name, category._id])
+      parentCategories.map((category) => [
+        `${category.name}-${category.type}`,
+        category._id,
+      ])
     );
 
     const foodAndDrinksId = parentCategoryMap.get(
-      "Food & drink"
+      "Food & drink-expense"
     ) as Schema.Types.ObjectId;
     const shoppingId = parentCategoryMap.get(
-      "Shopping"
+      "Shopping-expense"
     ) as Schema.Types.ObjectId;
     const entertainmentId = parentCategoryMap.get(
-      "Entertainment"
+      "Entertainment-expense"
     ) as Schema.Types.ObjectId;
     const transportId = parentCategoryMap.get(
-      "Transportation"
+      "Transportation-expense"
     ) as Schema.Types.ObjectId;
     const educationId = parentCategoryMap.get(
-      "Education"
+      "Education-expense"
     ) as Schema.Types.ObjectId;
-    const otherId = parentCategoryMap.get("Other") as Schema.Types.ObjectId;
+    const otherExpId = parentCategoryMap.get(
+      "Other-expense"
+    ) as Schema.Types.ObjectId;
+
+    const salaryId = parentCategoryMap.get(
+      "Salary-income"
+    ) as Schema.Types.ObjectId;
+    const businessId = parentCategoryMap.get(
+      "Business-income"
+    ) as Schema.Types.ObjectId;
+    const investmentId = parentCategoryMap.get(
+      "Investment-income"
+    ) as Schema.Types.ObjectId;
+    const otherIncId = parentCategoryMap.get(
+      "Other-income"
+    ) as Schema.Types.ObjectId;
 
     if (
       !(
@@ -37,7 +55,11 @@ export const seedCategories = async () => {
         entertainmentId &&
         transportId &&
         educationId &&
-        otherId
+        otherExpId &&
+        salaryId &&
+        businessId &&
+        investmentId &&
+        otherIncId
       )
     ) {
       throw new Error("Some parent categories are missing");
@@ -128,17 +150,46 @@ export const seedCategories = async () => {
 
       {
         name: "Miscellaneous",
-        parentCategory: otherId,
+        parentCategory: otherExpId,
         icon: "miscellaneous.png",
         predefined: true,
         type: "expense",
       },
       {
         name: "Donations",
-        parentCategory: otherId,
+        parentCategory: otherExpId,
         icon: "donations.png",
         predefined: true,
         type: "expense",
+      },
+
+      {
+        name: "Salary",
+        parentCategory: salaryId,
+        icon: "salary.png",
+        predefined: true,
+        type: "income",
+      },
+      {
+        name: "Business",
+        parentCategory: businessId,
+        icon: "business.png",
+        predefined: true,
+        type: "income",
+      },
+      {
+        name: "Investment",
+        parentCategory: investmentId,
+        icon: "investment.png",
+        predefined: true,
+        type: "income",
+      },
+      {
+        name: "Gifts",
+        parentCategory: otherIncId,
+        icon: "gifts.png",
+        predefined: true,
+        type: "income",
       },
     ];
 

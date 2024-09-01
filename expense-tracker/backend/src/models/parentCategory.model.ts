@@ -2,13 +2,13 @@ import mongoose, { Document, Schema } from "mongoose";
 
 export interface IParentCategory extends Document {
   name: string;
-  color: string;
+  type: "income" | "expense";
   createdAt: Date;
 }
 
 const ParentCategorySchema: Schema = new Schema({
-  name: { type: String, required: true, unique: true },
-  color: { type: String, requied: true },
+  name: { type: String, required: true },
+  type: { type: String, required: true, enum: ["income", "expense"] },
   createdAt: { type: Date, default: Date.now },
 });
 

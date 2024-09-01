@@ -2,12 +2,14 @@ import React from "react";
 import { ITransactionGroup } from "../../types/transactions";
 import TransactionItem from "./TransactionItem";
 import { toCurrency } from "../../utils/helper";
+import { IModal } from "../../pages/Transactions";
 
 type Props = {
   group: ITransactionGroup;
+  setIsModalOpen: React.Dispatch<React.SetStateAction<IModal>>
 };
 
-const TransactionGroup = ({ group }: Props) => {
+const TransactionGroup = ({ group, setIsModalOpen }: Props) => {
   const totalTransactionAmount = group.transactions.reduce(
     (acc, transaction) =>
       transaction.type === "expense"
@@ -40,7 +42,7 @@ const TransactionGroup = ({ group }: Props) => {
       </div>
       <ul className="divide-y-2 px-3">
         {group.transactions.map((transaction) => (
-          <TransactionItem key={transaction._id} transaction={transaction} />
+          <TransactionItem key={transaction._id} transaction={transaction} setIsModalOpen={setIsModalOpen} />
         ))}
       </ul>
     </div>

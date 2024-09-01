@@ -103,7 +103,7 @@ export const addNewTransaction = async (req: Request, res: Response) => {
 export const updateTransaction = async (req: Request, res: Response) => {
   const userId = (req.user as IUser)._id;
   const data = matchedData(req);
-  const { amount, description, category, date, transactionId } = data;
+  const { amount, description, category, date, transactionId, type } = data;
 
   if (!(amount || description || category || date)) {
     return res.status(400).json({ error: true, msg: "No changes provided" });
@@ -112,7 +112,7 @@ export const updateTransaction = async (req: Request, res: Response) => {
   try {
     const transaction = await Transaction.findOneAndUpdate(
       { _id: transactionId, user: userId },
-      { amount, description, category, date },
+      { amount, description, category, date, type },
       { new: true }
     );
 

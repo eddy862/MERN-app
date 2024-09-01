@@ -3,24 +3,22 @@ import { ICategory } from "../../types/categories";
 
 type Props = {
   category: ICategory;
-  index: number;
-  selectedIndex: number;
-  setSelectedIndex: React.Dispatch<React.SetStateAction<number>>;
+  selectedId: string;
+  setSelectedId: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const CategoryItem = ({
   category,
-  index,
-  selectedIndex,
-  setSelectedIndex,
+  selectedId,
+  setSelectedId,
 }: Props) => {
   return (
     <div className="flex justify-center">
       <div
         className={`w-16 flex flex-col gap-2 p-2 items-center justify-center hover:bg-slate-100 cursor-pointer rounded ${
-          selectedIndex === index ? "bg-slate-200" : ""
+          selectedId === category._id ? "bg-slate-200" : ""
         }`}
-        onClick={() => setSelectedIndex(index)}
+        onClick={() => setSelectedId(category._id)}
       >
         <img
           className="w-7"

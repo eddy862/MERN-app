@@ -37,8 +37,8 @@ const Login = (props: Props) => {
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (useUsernameLogin && loginInfo.username) {
-      if (!loginInfo.username.trim()) {
+    if (useUsernameLogin) {
+      if (!loginInfo.username?.trim()) {
         setError("Please enter username.");
         return;
       }
@@ -49,8 +49,8 @@ const Login = (props: Props) => {
       }
     }
 
-    if (!useUsernameLogin && loginInfo.email) {
-      if (!loginInfo.email.trim()) {
+    if (!useUsernameLogin) {
+      if (!loginInfo.email?.trim()) {
         setError("Please enter email address.");
         return;
       }
