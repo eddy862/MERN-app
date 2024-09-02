@@ -1,28 +1,30 @@
 import React, { useContext, useState } from "react";
-import { IModal } from "../../pages/Transactions";
-import { CloseSmall, Delete } from "@icon-park/react";
+import { ICategoryModal, ITransModal } from "../../pages/Transactions";
+import { CloseSmall } from "@icon-park/react";
 import { CategoryContext } from "../../contexts/CategoryContext";
 import Categories from "../Categories/Categories";
 import axiosInstance from "../../utils/axiosInstance";
 import { isAxiosError } from "axios";
 
 type Props = {
-  isModalOpen: IModal;
-  setIsModalOpen: React.Dispatch<React.SetStateAction<IModal>>;
+  isTransModalOpen: ITransModal;
+  setIsTransModalOpen: React.Dispatch<React.SetStateAction<ITransModal>>;
   fetchTransactionGroups: () => Promise<void>;
+  setIsCategoryModalOpen: React.Dispatch<React.SetStateAction<ICategoryModal>>
 };
 
-const AddTransInner = ({
-  isModalOpen,
-  setIsModalOpen,
+const AddEditTransInner = ({
+  isTransModalOpen,
+  setIsTransModalOpen,
   fetchTransactionGroups,
+  setIsCategoryModalOpen
 }: Props) => {
-  const categories = useContext(CategoryContext);
+  const { categories } = useContext(CategoryContext);
 
   const expenses = categories.filter((category) => category.type === "expense");
   const incomes = categories.filter((category) => category.type === "income");
 
-  const selectedTransaction = isModalOpen.selectedTrans;
+  const selectedTransaction = isTransModalOpen.selectedTrans;
 
   const [transactionType, setTransactionType] = useState<"expense" | "income">(
     selectedTransaction?.type || "expense"
@@ -53,7 +55,7 @@ const AddTransInner = ({
       if (selectedTransaction) {
         await axiosInstance.delete(`/api/transactions/${selectedTransaction._id}`);
         await fetchTransactionGroups();
-        setIsModalOpen({ isOpen: false });
+        setIsTransModalOpen({ isOpen: false });
       }
     } catch (error) {
       if (isAxiosError(error)) {
@@ -73,7 +75,7 @@ const AddTransInner = ({
       transactionType === "expense" ? selectedExpenseId : selectedIncomeId;
 
     try {
-      if (isModalOpen.type === "add") {
+      if (isTransModalOpen.type === "add") {
         await axiosInstance.post("/api/transactions", {
           amount,
           type: transactionType,
@@ -83,7 +85,7 @@ const AddTransInner = ({
         });
       }
 
-      if (isModalOpen.type === "edit" && selectedTransaction) {
+      if (isTransModalOpen.type === "edit" && selectedTransaction) {
         await axiosInstance.patch(
           `/api/transactions/${selectedTransaction._id}`,
           {
@@ -98,7 +100,7 @@ const AddTransInner = ({
 
       await fetchTransactionGroups();
 
-      setIsModalOpen({ isOpen: false });
+      setIsTransModalOpen({ isOpen: false });
     } catch (error) {
       if (isAxiosError(error)) {
         if (error.response && error.response.data.msg) {
@@ -115,13 +117,13 @@ const AddTransInner = ({
   };
 
   return (
-    <div className="relative z-20">
+    <div className="relative">
       <CloseSmall
         theme="outline"
         size="24"
         fill="#333"
         className="cursor-pointer absolute top-0 right-0"
-        onClick={() => setIsModalOpen({ isOpen: false })}
+        onClick={() => setIsTransModalOpen({ isOpen: false })}
       />
 
       <div className="flex justify-center text-sm font-medium">
@@ -144,6 +146,8 @@ const AddTransInner = ({
       </div>
 
       <Categories
+        transactionType={transactionType}
+        setIsCategoryModalOpen={setIsCategoryModalOpen}
         type={transactionType}
         expenses={expenses}
         incomes={incomes}
@@ -195,10 +199,10 @@ const AddTransInner = ({
             type="submit"
             className="py-2 flex-1 bg-purple-500 hover:bg-purple-400 text-white rounded-md font-medium"
           >
-            {isModalOpen.type === "add" ? "Add" : "Update"} Transaction
+            {isTransModalOpen.type === "add" ? "Add" : "Update"} Transaction
           </button>
 
-          {isModalOpen.type === "edit" && (
+          {isTransModalOpen.type === "edit" && (
             <button
               className="py-2 flex-1 bg-slate-400 hover:bg-slate-300 text-white rounded-md font-medium"
               onClick={deleteTransaction}
@@ -212,4 +216,4 @@ const AddTransInner = ({
   );
 };
 
-export default AddTransInner;
+export default AddEditTransInner;

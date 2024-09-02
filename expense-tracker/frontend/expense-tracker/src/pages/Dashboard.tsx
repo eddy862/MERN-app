@@ -1,5 +1,4 @@
 import React from 'react'
-import Sidebar from '../components/Sidebar/Sidebar'
 import Main from '../layouts/Main'
 
 type Props = {}

@@ -22,7 +22,7 @@ const CategoryItem = ({
       >
         <img
           className="w-7"
-          src={`icons/${category.icon}`}
+          src={`./category-icons/${category.icon}`}
           alt={category.icon}
         />
         <p className="text-xs text-center">{category.name}</p>

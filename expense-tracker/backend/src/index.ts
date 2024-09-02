@@ -9,6 +9,7 @@ import CategoryRouter from "./routes/category.route";
 import BudgetRouter from "./routes/budget.route";
 import FixedExpenseRouter from "./routes/fixedItem.route";
 import UserRouter from "./routes/user.route";
+import ParentCategoryRouter from "./routes/parentCategory.route";
 import passport from "passport";
 import configJwtPassport from "./config/strategies/jwt-strategy";
 import configGooglePassport from "./config/strategies/google-strategy";
@@ -44,7 +45,7 @@ app.use("/api/categories", CategoryRouter);
 app.use("/api/budgets", BudgetRouter);
 app.use("/api/fixedItems", FixedExpenseRouter);
 app.use("/api/user", UserRouter);
-
+app.use("/api/parentCategories", ParentCategoryRouter);
 const PORT = 5000;
 
 app.listen(PORT, () => {

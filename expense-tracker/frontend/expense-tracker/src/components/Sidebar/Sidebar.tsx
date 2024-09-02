@@ -17,7 +17,7 @@ const Sidebar = ({ isOpen }: Props) => {
   return (
     // a vertical flex container
     <div
-      className={`flex flex-col justify-between h-screen w-[280px] transition-[width] duration-500 ease-in-out px-3 py-6 ${
+      className={`flex flex-col justify-between h-screen w-[280px] transition-[width] duration-500 ease-in-out px-3 py-6 bg-white ${
         isOpen ? "w-[280px]" : "w-[70px] pl-4"
       }`}
     >

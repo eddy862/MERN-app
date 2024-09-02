@@ -7,13 +7,21 @@ type Props = {
   children: React.ReactNode;
 };
 
-export const CategoryContext = createContext<ICategory[]>([]);
+type CategoryContextType = {
+  categories: ICategory[];
+  fetchCategories: () => void;
+};
+
+export const CategoryContext = createContext<CategoryContextType>({
+  categories: [],
+  fetchCategories: () => {},
+});
 
 export const CategoryProvider = ({ children }: Props) => {
-  const { categories } = useCategories();
+  const { categories, fetchCategories } = useCategories();
 
   return (
-    <CategoryContext.Provider value={categories}>
+    <CategoryContext.Provider value={{ categories, fetchCategories }}>
       {children}
     </CategoryContext.Provider>
   );

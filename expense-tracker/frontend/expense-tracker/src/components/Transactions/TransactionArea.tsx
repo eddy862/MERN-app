@@ -1,16 +1,15 @@
 import React from "react";
 import TransactionGroup from "./TransactionGroup";
-import UseTransactionGroups from "../../hooks/useTransactionGroups";
 import { ITransactionGroup } from "../../types/transactions";
-import { IModal } from "../../pages/Transactions";
+import { ITransModal } from "../../pages/Transactions";
 
 type Props = {
   transactionGroups: ITransactionGroup[];
   loading: boolean;
-  setIsModalOpen: React.Dispatch<React.SetStateAction<IModal>>
+  setIsTransModalOpen: React.Dispatch<React.SetStateAction<ITransModal>>
 };
 
-const TransactionArea = ({ transactionGroups, loading, setIsModalOpen }: Props) => {
+const TransactionArea = ({ transactionGroups, loading, setIsTransModalOpen }: Props) => {
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -22,7 +21,7 @@ const TransactionArea = ({ transactionGroups, loading, setIsModalOpen }: Props) 
   return (
     <div className="flex flex-col gap-2 font-semibold overflow-y-auto">
       {transactionGroups.map((group) => (
-        <TransactionGroup key={group._id} group={group} setIsModalOpen={setIsModalOpen} />
+        <TransactionGroup key={group._id} group={group} setIsTransModalOpen={setIsTransModalOpen} />
       ))}
     </div>
   );
