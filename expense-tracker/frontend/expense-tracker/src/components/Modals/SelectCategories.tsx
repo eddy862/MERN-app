@@ -14,15 +14,17 @@ const SelectCategories = ({
   setSelectedCategoryIndex,
 }: Props) => {
   return (
-    <div className="grid grid-cols-4 gap-4 mt-4 overflow-y-auto h-48 items-start">
-      {categories.map((category, index) => (
-        <SelectCategoriesItem
-          key={category._id}
-          category={category}
-          selected={selectedCategoryIndex === index}
-          setSelectedCategoryIndex={() => setSelectedCategoryIndex(index)}
-        />
-      ))}
+    <div className=" mt-4 overflow-y-auto h-48">
+      <div className="grid grid-cols-4 gap-4">
+        {categories.map((category, index) => (
+          <SelectCategoriesItem
+            key={category._id}
+            category={category}
+            selected={selectedCategoryIndex === index}
+            setSelectedCategoryIndex={() => setSelectedCategoryIndex(index)}
+          />
+        ))}
+      </div>
     </div>
   );
 };

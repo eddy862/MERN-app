@@ -13,7 +13,7 @@ const SelectCategoriesItem = ({
   setSelectedCategoryIndex,
 }: Props) => {
   return (
-    <div className="inline-flex items-center justify-center">
+    <div className="flex items-center justify-center">
       <img
         src={`./category-icons/${category.icon}`}
         alt={category.name}

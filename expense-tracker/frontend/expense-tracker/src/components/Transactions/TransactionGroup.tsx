@@ -22,7 +22,7 @@ const TransactionGroup = ({ group, setIsTransModalOpen }: Props) => {
   const formattedDate = date.toLocaleDateString("en-MY", { weekday: "short" });
 
   return (
-    <div className="border-2 border-slate-500 rounded bg-white">
+    <div className="border-2 border-slate-500 rounded bg-white overflow-hidden">
       <div className="py-2 px-3 border-b-2 border-slate-500 flex justify-between items-center">
         <div className="inline-flex gap-2">
           <p>{group._id}</p>

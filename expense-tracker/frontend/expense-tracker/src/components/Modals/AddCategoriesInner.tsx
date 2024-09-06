@@ -40,6 +40,11 @@ const AddCategoriesInner = ({
       return;
     }
 
+    if (categoryName.length > 20) {
+      setError("Category name cannot exceed 20 characters");
+      return;
+    }
+
     if (targetCategories[selectedCategoryIndex].name === categoryName) {
       setError("Category name is already exists");
       return;

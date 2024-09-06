@@ -39,14 +39,18 @@ export const getTransactionValidator = [
 ];
 
 export const addTransactionValidator = [
-  body("amount").isNumeric().withMessage("Amount is required"),
+  body("amount")
+    .isNumeric()
+    .isLength({ max: 10 })
+    .withMessage("Amount is required and cannot exceed 10 digits"),
   body("type")
     .isIn(["expense", "income"])
     .withMessage("Type must be either expense or income"),
   body("description")
     .optional()
     .isString()
-    .withMessage("Description must be a string if provided"),
+    .isLength({ max: 100 })
+    .withMessage("Description must be a string if provided and cannot exceed 100 characters"),
   body("category").isMongoId().withMessage("Category ID is invalid"),
   body("date").optional().isISO8601().toDate().withMessage("Date is invalid"),
 ];

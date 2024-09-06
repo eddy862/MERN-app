@@ -32,7 +32,7 @@ export const getAllCategories = async (req: Request, res: Response) => {
   try {
     const categories = await Category.find({
       $or: [{ user: userId }, { predefined: true }],
-    });
+    }).sort({ predefined: -1 });
     return res.status(200).json({ error: false, categories });
   } catch {
     return res

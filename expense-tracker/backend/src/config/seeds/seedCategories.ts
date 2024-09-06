@@ -3,8 +3,9 @@ import Category, { ICategory } from "../../models/category.model";
 import ParentCategory from "../../models/parentCategory.model";
 
 export const seedCategories = async () => {
-  try {
-    const parentCategories = await ParentCategory.find({});
+  if (await Category.countDocuments({}) === 0) {
+    try {
+      const parentCategories = await ParentCategory.find({});
     if (parentCategories.length === 0) {
       throw new Error("No parent categories found");
     }
@@ -199,6 +200,7 @@ export const seedCategories = async () => {
     await Category.insertMany(predefinedCategories);
     console.log("Predefined categories seeded");
   } catch (err) {
-    console.log("Error seeding categories: ", err);
+      console.log("Error seeding categories: ", err);
+    }
   }
 };

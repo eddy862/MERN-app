@@ -39,7 +39,7 @@ const AddEditTransInner = ({
       ? selectedTransaction.category
       : incomes[0]._id
   );
-  const [amount, setAmount] = useState(selectedTransaction?.amount || "0");
+  const [amount, setAmount] = useState(selectedTransaction?.amount.toString() || "0");
   const [date, setDate] = useState(
     selectedTransaction?.date
       ? selectedTransaction.date.split("T")[0]
@@ -70,6 +70,16 @@ const AddEditTransInner = ({
 
   const addTransaction = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (amount.length > 10) {
+      setError("Amount cannot exceed 10 digits");
+      return;
+    }
+
+    if (description.length > 100) {
+      setError("Description cannot exceed 100 characters");
+      return;
+    }
 
     const categoryId =
       transactionType === "expense" ? selectedExpenseId : selectedIncomeId;

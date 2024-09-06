@@ -16,13 +16,15 @@ const predefinedParentCategories: Partial<IParentCategory>[] = [
 ];
 
 export const seedParentCategories = async () => {
-  try {
-    await ParentCategory.deleteMany({});
+  if (await ParentCategory.countDocuments({}) === 0) {
+    try {
+      await ParentCategory.deleteMany({});
     console.log("Parent categories collection cleared");
 
     await ParentCategory.insertMany(predefinedParentCategories);
     console.log("Predefined parent categories seeded");
   } catch (err) {
-    console.error("Error seeding parent categories:", err);
+      console.error("Error seeding parent categories:", err);
+    }
   }
 };

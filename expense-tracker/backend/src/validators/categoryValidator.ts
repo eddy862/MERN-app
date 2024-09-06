@@ -1,7 +1,10 @@
 const { body } = require("express-validator");
 
 export const addCategoryValidator = [
-  body("name").isString().withMessage("Name is required"),
+  body("name")
+    .isString()
+    .isLength({ max: 20 })
+    .withMessage("Name is required and cannot exceed 20 characters"),
   body("icon").isString().withMessage("Icon is required"),
   body("parentCategory")
     .isMongoId()
