@@ -1,3 +1,4 @@
+import { ICategory } from "../types/categories";
 import { IGoogleUser, ILocalUser } from "../types/user";
 
 export const verifyEmail = (email: string) => {
@@ -33,5 +34,15 @@ export const isGoogleUser = (user: unknown): user is IGoogleUser => {
 
 export const toCurrency = (amount: number) => {
   return amount.toFixed(2);
+};
+
+export const isCategoryExists = (
+  categories: ICategory[],
+  categoryName: string,
+  type: "expense" | "income"
+) => {
+  return categories.some(
+    (category) => category.name === categoryName && category.type === type
+  );
 };
 

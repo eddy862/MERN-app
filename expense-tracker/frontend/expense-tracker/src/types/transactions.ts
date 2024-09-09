@@ -23,5 +23,5 @@ export interface ITransactionFilter {
   page?: number;
   limit?: number;
   type?: "expense" | "income";
-  groupByDate?: boolean;
+  groupByDate?: "month" | "day";
 }

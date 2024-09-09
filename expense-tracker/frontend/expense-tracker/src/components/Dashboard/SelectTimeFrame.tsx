@@ -14,7 +14,7 @@ const SelectTimeFrame = ({ selectedTimeFrame, setSelectedTimeFrame }: Props) => 
           }`}
           onClick={() => setSelectedTimeFrame("monthly")}
         >
-          Monthly
+          Month
         </button>
         <button
           className={`px-3 ${

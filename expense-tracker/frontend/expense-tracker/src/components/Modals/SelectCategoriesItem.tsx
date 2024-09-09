@@ -1,8 +1,7 @@
 import React from "react";
-import { ICategory } from "../../types/categories";
 
 type Props = {
-  category: ICategory;
+  category: string;
   selected: boolean;
   setSelectedCategoryIndex: () => void;
 };
@@ -15,8 +14,8 @@ const SelectCategoriesItem = ({
   return (
     <div className="flex items-center justify-center">
       <img
-        src={`./category-icons/${category.icon}`}
-        alt={category.name}
+        src={`./category-icons/${category}`}
+        alt={category}
         className={`w-7 cursor-pointer ${
           selected ? "opacity-100" : "opacity-50"
         }`}

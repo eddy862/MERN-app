@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from "react";
+import React, { useContext, useState } from "react";
 import { ICategoryModal } from "../../pages/Transactions";
 import useParentCategories from "../../hooks/useParentCategories";
 import ParentCategories from "../ParentCategories/ParentCategories";
@@ -6,6 +6,11 @@ import { CategoryContext } from "../../contexts/CategoryContext";
 import SelectCategories from "./SelectCategories";
 import axiosInstance from "../../utils/axiosInstance";
 import { isAxiosError } from "axios";
+import {
+  categoryExpenseIcons,
+  categoryIncomeIcons,
+} from "../../utils/categoryIcons";
+import { isCategoryExists } from "../../utils/helper";
 
 type Props = {
   isCategoryModalOpen: ICategoryModal;
@@ -26,11 +31,7 @@ const AddCategoriesInner = ({
 
   const { categories, fetchCategories } = useContext(CategoryContext);
 
-  const targetCategories = useMemo(() => {
-    return isCategoryModalOpen.type === "expense"
-      ? categories.filter((category) => category.type === "expense")
-      : categories.filter((category) => category.type === "income");
-  }, [isCategoryModalOpen.type, categories]);
+  const targetCategories = isCategoryModalOpen.type === "expense" ? categoryExpenseIcons : categoryIncomeIcons;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -45,7 +46,13 @@ const AddCategoriesInner = ({
       return;
     }
 
-    if (targetCategories[selectedCategoryIndex].name === categoryName) {
+    if (
+      isCategoryExists(
+        categories,
+        categoryName,
+        isCategoryModalOpen.type as "expense" | "income"
+      )
+    ) {
       setError("Category name is already exists");
       return;
     }
@@ -55,7 +62,7 @@ const AddCategoriesInner = ({
         name: categoryName,
         type: isCategoryModalOpen.type,
         parentCategory: parentCategories[selectedParentCategoryIndex]._id,
-        icon: targetCategories[selectedCategoryIndex].icon,
+        icon: targetCategories[selectedCategoryIndex],
       });
 
       fetchCategories();

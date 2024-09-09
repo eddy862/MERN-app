@@ -29,7 +29,7 @@ const SelectMonth = ({
       <input
         className="bg-transparent text-sm cursor-pointer"
         type="month"
-        value={`${startDate.slice(0, 7)}`}
+        value={startDate.slice(0, 7)}
         onChange={onMonthChange}
       />
     </div>

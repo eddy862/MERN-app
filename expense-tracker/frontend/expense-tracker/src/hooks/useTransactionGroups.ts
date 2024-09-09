@@ -14,13 +14,16 @@ const UseTransactionGroups = (filter: ITransactionFilter) => {
 
   const fetchTransGroups = async () => {
     setLoading(true);
-    filter.groupByDate = true;
+
+    if (filter.groupByDate === undefined) {
+      filter.groupByDate = "day";
+    }
 
     try {
       const response = await axiosInstance.get("/api/transactions", {
         params: filter,
       });
-  
+
       if (response.data && response.data.transactions) {
         setTransactionGroups(response.data.transactions as ITransactionGroup[]);
       }
@@ -37,7 +40,7 @@ const UseTransactionGroups = (filter: ITransactionFilter) => {
 
   useEffect(() => {
     fetchTransGroups();
-  }, []);
+  }, [filter.startDate, filter.endDate, filter.groupByDate]);
 
   return { transactionGroups, loading, fetchTransGroups };
 };

@@ -1,9 +1,8 @@
-import React, { useMemo } from "react";
-import { ICategory } from "../../types/categories";
+import React from "react";
 import SelectCategoriesItem from "./SelectCategoriesItem";
 
 type Props = {
-  categories: ICategory[];
+  categories: string[];
   selectedCategoryIndex: number;
   setSelectedCategoryIndex: React.Dispatch<React.SetStateAction<number>>;
 };
@@ -18,7 +17,7 @@ const SelectCategories = ({
       <div className="grid grid-cols-4 gap-4">
         {categories.map((category, index) => (
           <SelectCategoriesItem
-            key={category._id}
+            key={index}
             category={category}
             selected={selectedCategoryIndex === index}
             setSelectedCategoryIndex={() => setSelectedCategoryIndex(index)}

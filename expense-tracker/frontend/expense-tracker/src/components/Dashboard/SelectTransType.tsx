@@ -1,8 +1,8 @@
 import React from "react";
 
 type Props = {
-  transactionsType: "expense" | "income";
-  setTransactionsType: React.Dispatch<React.SetStateAction<"expense" | "income">>;
+  transactionsType: "expense" | "income" | "balance";
+  setTransactionsType: React.Dispatch<React.SetStateAction<"expense" | "income" | "balance">>;
 };
 
 const SelectTransType = ({ transactionsType, setTransactionsType }: Props) => {
@@ -24,6 +24,14 @@ const SelectTransType = ({ transactionsType, setTransactionsType }: Props) => {
           onClick={() => setTransactionsType("income")}
         >
           Income
+        </button>
+        <button
+          className={`px-2 py-1 ${
+            transactionsType === "balance" ? "bg-yellow-400 text-white" : ""
+          }`}
+          onClick={() => setTransactionsType("balance")}
+        >
+          Balance
         </button>
       </div>
     </div>

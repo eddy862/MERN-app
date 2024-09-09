@@ -34,8 +34,8 @@ export const getTransactionValidator = [
     .withMessage("Type must be either expense or income"),
   query("groupByDate")
     .optional()
-    .isBoolean()
-    .withMessage("Group by date must be a boolean"),
+    .isIn(["month", "day"])
+    .withMessage("Group by date must be either month or day"),
 ];
 
 export const addTransactionValidator = [

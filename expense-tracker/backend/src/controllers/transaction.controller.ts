@@ -48,11 +48,12 @@ export const getAllTransaction = async (req: Request, res: Response) => {
   try {
     let transactions;
     if (groupByDate) {
+      const groupFormat = groupByDate === 'month' ? '%Y-%m' : '%Y-%m-%d';
       transactions = await Transaction.aggregate([
         { $match: query },
         {
           $group: {
-            _id: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+            _id: { $dateToString: { format: groupFormat, date: "$date" } },
             transactions: { $push: "$$ROOT" },
           },
         },

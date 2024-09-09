@@ -7,7 +7,7 @@ type Props = {
   setEndDate: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const SetCustomDate = ({
+const SetCustomMonth = ({
   startDate,
   endDate,
   setStartDate,
@@ -25,7 +25,6 @@ const SetCustomDate = ({
     setEndDate(e.target.value);
   };
 
-
   return (
     <div className="mt-3 text-sm flex justify-center">
       <div className="flex flex-col sm:flex-row gap-2 items-center">
@@ -33,8 +32,8 @@ const SetCustomDate = ({
           <p>From</p>
           <input
             className="py-1 px-2"
-            type="date"
-            value={startDate}
+            type="month"
+            value={startDate.slice(0, 7)}
             onChange={(e) => setStartDate(e.target.value)}
           />
         </div>
@@ -42,8 +41,8 @@ const SetCustomDate = ({
           <p>To</p>
           <input
             className="p-1"
-            type="date"
-            value={endDate}
+            type="month"
+            value={endDate.slice(0, 7)}
             onChange={handleEndDateChange}
           />
         </div>
@@ -53,4 +52,4 @@ const SetCustomDate = ({
   );
 };
 
-export default SetCustomDate;
+export default SetCustomMonth;
