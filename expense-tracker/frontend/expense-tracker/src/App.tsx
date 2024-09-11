@@ -5,6 +5,8 @@ import SignUp from './pages/SignUp'
 import Dashboard from './pages/Dashboard'
 import Transactions from './pages/Transactions'
 import { CategoryProvider } from './contexts/CategoryContext'
+import FixedItems from './pages/FixedItems'
+import Budgets from './pages/Budgets'
 
 type Props = {}
 
@@ -22,6 +24,16 @@ const App = (props: Props) => {
         <Route path='/transactions' element={
           <CategoryProvider>
             <Transactions/>
+          </CategoryProvider>
+        }/>
+        <Route path='/fixed-items' element={
+          <CategoryProvider>
+            <FixedItems/>
+          </CategoryProvider>
+        }/>
+        <Route path='/budgets' element={
+          <CategoryProvider>
+            <Budgets/>
           </CategoryProvider>
         }/>
       </Routes>

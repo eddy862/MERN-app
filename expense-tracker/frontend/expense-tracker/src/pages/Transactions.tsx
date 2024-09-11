@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Main from "../layouts/Main";
 import TransactionArea from "../components/Transactions/TransactionArea";
 import AddTransButton from "../components/Transactions/AddTransButton";
@@ -7,6 +7,8 @@ import Modal from "react-modal";
 import AddEditTransInner from "../components/Modals/AddEditTransInner";
 import { ITransaction } from "../types/transactions";
 import AddCategoriesInner from "../components/Modals/AddCategoriesInner";
+import SelectDate from "../components/Transactions/SelectDate";
+import IncomeExpensePie from "../components/Transactions/IncomeExpensePie";
 
 type Props = {};
 
@@ -24,9 +26,6 @@ export type ICategoryModal = {
 Modal.setAppElement("#root");
 
 const Transactions = (props: Props) => {
-  const { transactionGroups, loading, fetchTransGroups } = UseTransactionGroups(
-    {}
-  );
   const [isTransModalOpen, setIsTransModalOpen] = useState<ITransModal>({
     isOpen: false,
   });
@@ -34,9 +33,92 @@ const Transactions = (props: Props) => {
     useState<ICategoryModal>({
       isOpen: false,
     });
+  const [startDate, setStartDate] = useState(() => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), 2)
+      .toISOString()
+      .split("T")[0];
+  });
+  const [endDate, setEndDate] = useState(() => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth() + 1, 1)
+      .toISOString()
+      .split("T")[0];
+  });
+  const [monthOffset, setMonthOffset] = useState(0);
+  const [yearOffset, setYearOffset] = useState(0);
+
+  // Update start and end date when monthOffset changes
+  useEffect(() => {
+    const now = new Date();
+    const start = new Date(now.getFullYear(), now.getMonth() + monthOffset, 2)
+      .toISOString()
+      .split("T")[0];
+    const end = new Date(now.getFullYear(), now.getMonth() + monthOffset + 1, 1)
+      .toISOString()
+      .split("T")[0];
+    setStartDate(start);
+    setEndDate(end);
+  }, [monthOffset]);
+
+  useEffect(() => {
+    const now = new Date();
+    const start = new Date(
+      now.getFullYear() + yearOffset,
+      now.getMonth() + monthOffset,
+      2
+    )
+      .toISOString()
+      .split("T")[0];
+    const end = new Date(
+      now.getFullYear() + yearOffset,
+      now.getMonth() + monthOffset + 1,
+      1
+    )
+      .toISOString()
+      .split("T")[0];
+    setStartDate(start);
+    setEndDate(end);
+  }, [yearOffset]);
+
+  const { transactionGroups, loading, fetchTransGroups } = UseTransactionGroups(
+    { startDate, endDate }
+  );
+
+  let totalIncome = 0;
+  let totalExpense = 0;
+
+  const balance = useMemo(() => {
+    return transactionGroups.reduce((acc, transaction) => {
+      return (
+        acc +
+        transaction.transactions.reduce((acc, transaction) => {
+          if (transaction.type === "expense") {
+            totalExpense += transaction.amount;
+            return acc - transaction.amount;
+          } else {
+            totalIncome += transaction.amount;
+            return acc + transaction.amount;
+          }
+        }, 0)
+      );
+    }, 0);
+  }, [transactionGroups]);
 
   return (
     <Main>
+      <SelectDate
+        startDate={startDate}
+        setMonthOffset={setMonthOffset}
+        setYearOffset={setYearOffset}
+      />
+
+      {transactionGroups.length > 0 && <IncomeExpensePie
+        balance={balance}
+        totalIncome={totalIncome}
+        totalExpense={totalExpense}
+      />}
+
       <TransactionArea
         transactionGroups={transactionGroups}
         loading={loading}
@@ -81,7 +163,10 @@ const Transactions = (props: Props) => {
         }}
         className="w-[60%] md:w-[50%] lg:w-[40%] xl:w-[30%] 2xl:w-[25%] max-h-3/4 bg-white mx-auto mt-20 rounded-md outline-none px-3 py-4"
       >
-        <AddCategoriesInner isCategoryModalOpen={isCategoryModalOpen} setIsCategoryModalOpen={setIsCategoryModalOpen} />
+        <AddCategoriesInner
+          isCategoryModalOpen={isCategoryModalOpen}
+          setIsCategoryModalOpen={setIsCategoryModalOpen}
+        />
       </Modal>
     </Main>
   );

@@ -148,7 +148,6 @@ const Dashboard = (props: Props) => {
         <SelectMonth
           startDate={startDate}
           setStartDate={setStartDate}
-          endDate={endDate}
           setEndDate={setEndDate}
         />
       )}

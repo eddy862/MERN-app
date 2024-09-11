@@ -3,14 +3,12 @@ import React from "react";
 type Props = {
   startDate: string;
   setStartDate: React.Dispatch<React.SetStateAction<string>>;
-  endDate: string;
   setEndDate: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const SelectMonth = ({
   startDate,
   setStartDate,
-  endDate,
   setEndDate,
 }: Props) => {
   const onMonthChange = (e: React.ChangeEvent<HTMLInputElement>) => {

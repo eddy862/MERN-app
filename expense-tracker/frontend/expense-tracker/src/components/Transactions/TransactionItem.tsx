@@ -3,6 +3,7 @@ import { ITransaction } from "../../types/transactions";
 import { CategoryContext } from "../../contexts/CategoryContext";
 import { toCurrency } from "../../utils/helper";
 import { ITransModal } from "../../pages/Transactions";
+import CategoryIconBackground from "../Icons/CategoryIconBackground";
 
 type Props = {
   transaction: ITransaction;
@@ -29,19 +30,13 @@ const TransactionItem = ({ transaction, setIsTransModalOpen }: Props) => {
       }
     >
       <div className="flex gap-2 items-center">
-        <div
-          className={`relative before:content-[''] before:absolute before:w-4 before:h-4 before:rounded-full ${
-            transaction.type === "expense"
-              ? "before:bg-pink-400"
-              : "before:bg-blue-400"
-          } before:bottom-1/2 before:right-1/2 before:translate-x-1/2 before:translate-y-1/2`}
-        >
+        <CategoryIconBackground categoryType={transaction.type}>
           <img
             className="relative w-6"
             src={`./category-icons/${category?.icon}`}
             alt={category?.name}
           />
-        </div>
+        </CategoryIconBackground>
         <p>{transaction.description}</p>
       </div>
       <div>

@@ -46,3 +46,22 @@ export const isCategoryExists = (
   );
 };
 
+export const getDayName = (day: number): string => {
+  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  return days[day];
+};
+
+export const getOrdinalSuffix = (day: number): string => {
+  if (day > 3 && day < 21) return "th";
+  switch (day % 10) {
+    case 1:
+      return "st";
+    case 2:
+      return "nd";
+    case 3:
+      return "rd";
+    default:
+      return "th";
+  }
+};
+
