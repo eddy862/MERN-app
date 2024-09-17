@@ -11,7 +11,19 @@ export interface IFixedItem {
   period: "weekly" | "monthly";
   daysOfWeek?: number[] ; // 0 (Sunday) to 6 (Saturday)
   daysOfMonth?: number[]; // 1 to 31
-  startDate: Date;
+  startDate: string;
   isActive: boolean;
   createdAt: Date;
+}
+
+export interface IUpdateFixedItemBody {
+  amount?: number;
+  description?: string;
+  category?: string;
+  startDate?: Date;
+  frequency?: number | "unlimited";
+  period?: "weekly" | "monthly";
+  daysOfWeek?: number[];
+  daysOfMonth?: number[];
+  isActive?: boolean;
 }

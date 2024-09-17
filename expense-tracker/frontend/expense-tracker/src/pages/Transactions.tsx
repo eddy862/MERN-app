@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Main from "../layouts/Main";
-import TransactionArea from "../components/Transactions/TransactionArea";
-import AddTransButton from "../components/Transactions/AddTransButton";
+import TransactionList from "../components/Transactions/TransactionList";
+import AddTransButton from "../components/Buttons/AddItemButton";
 import UseTransactionGroups from "../hooks/useTransactionGroups";
 import Modal from "react-modal";
 import AddEditTransInner from "../components/Modals/AddEditTransInner";
@@ -119,13 +119,14 @@ const Transactions = (props: Props) => {
         totalExpense={totalExpense}
       />}
 
-      <TransactionArea
+      <TransactionList
         transactionGroups={transactionGroups}
         loading={loading}
         setIsTransModalOpen={setIsTransModalOpen}
       />
 
       <AddTransButton
+        tooltipTitle="Add Transaction"
         toggleModal={() =>
           setIsTransModalOpen((prev) => ({
             ...prev,

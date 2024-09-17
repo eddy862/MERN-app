@@ -9,19 +9,23 @@ type Props = {
 
 type CategoryContextType = {
   categories: ICategory[];
-  fetchCategories: () => void;
+  fetchCategories: () => Promise<void>;
+  defaultSelectedCategory: ICategory | null;
+  setDefaultSelectedCategory: (category: ICategory) => void;
 };
 
 export const CategoryContext = createContext<CategoryContextType>({
   categories: [],
-  fetchCategories: () => {},
+  fetchCategories: async () => {},
+  defaultSelectedCategory: null,
+  setDefaultSelectedCategory: () => {},
 });
 
 export const CategoryProvider = ({ children }: Props) => {
-  const { categories, fetchCategories } = useCategories();
+  const { categories, fetchCategories, defaultSelectedCategory, setDefaultSelectedCategory } = useCategories();
 
   return (
-    <CategoryContext.Provider value={{ categories, fetchCategories }}>
+    <CategoryContext.Provider value={{ categories, fetchCategories, defaultSelectedCategory, setDefaultSelectedCategory }}>
       {children}
     </CategoryContext.Provider>
   );

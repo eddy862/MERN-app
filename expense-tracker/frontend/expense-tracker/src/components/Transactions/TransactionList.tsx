@@ -9,7 +9,7 @@ type Props = {
   setIsTransModalOpen: React.Dispatch<React.SetStateAction<ITransModal>>
 };
 
-const TransactionArea = ({ transactionGroups, loading, setIsTransModalOpen }: Props) => {
+const TransactionList = ({ transactionGroups, loading, setIsTransModalOpen }: Props) => {
   if (loading) {
     return <p className="text-center text-gray-500">Loading...</p>;
   }
@@ -27,4 +27,4 @@ const TransactionArea = ({ transactionGroups, loading, setIsTransModalOpen }: Pr
   );
 };
 
-export default TransactionArea;
+export default TransactionList;

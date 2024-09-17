@@ -41,7 +41,6 @@ const Categories = ({
           <CategoryItem
             key={category._id}
             category={category}
-            selectedId={selectedId}
             setSelectedId={setSelectedId}
           />
         ))}

@@ -4,12 +4,13 @@ import CustomTooltip from "../CustomTooltip";
 
 type Props = {
   toggleModal: () => void;
+  tooltipTitle: string;
 };
 
-const AddTransButton = ({ toggleModal }: Props) => {
+const AddItemButton = ({ toggleModal, tooltipTitle }: Props) => {
   return (
     <div className="fixed cursor-pointer right-8 bottom-5 hover:scale-105 transform transition-transform">
-      <CustomTooltip title="Add Transaction" placement="left">
+      <CustomTooltip title={tooltipTitle} placement="left">
         <AddOne
           theme="filled"
           size="70"
@@ -22,4 +23,4 @@ const AddTransButton = ({ toggleModal }: Props) => {
   );
 };
 
-export default AddTransButton;
+export default AddItemButton;

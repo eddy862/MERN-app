@@ -3,15 +3,11 @@ import { ICategory } from "../../types/categories";
 
 type Props = {
   category: ICategory;
-  selectedId: string;
-  setSelectedId: React.Dispatch<React.SetStateAction<string>>;
+  selectedId?: string;
+  setSelectedId: React.Dispatch<React.SetStateAction<string>> | ((id: string) => void);
 };
 
-const CategoryItem = ({
-  category,
-  selectedId,
-  setSelectedId,
-}: Props) => {
+const CategoryItem = ({ category, selectedId, setSelectedId }: Props) => {
   return (
     <div className="flex justify-center">
       <div

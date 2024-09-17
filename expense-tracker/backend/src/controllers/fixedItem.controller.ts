@@ -102,7 +102,7 @@ export const updateFixedItem = async (req: Request, res: Response) => {
       period ||
       daysOfWeek ||
       daysOfMonth ||
-      isActive
+      isActive !== undefined
     )
   ) {
     return res.status(400).json({ error: true, msg: "No changes provided" });
@@ -185,21 +185,6 @@ export const updateFixedItem = async (req: Request, res: Response) => {
       });
     }
 
-    // Ensure daysOfWeek or daysOfMonth is not provided if the period is opposite
-    if (fixedItem.period === "weekly" && daysOfMonth) {
-      return res.status(400).json({
-        error: true,
-        msg: "The period is weekly, days of month should not be provided",
-      });
-    }
-
-    if (fixedItem.period === "monthly" && daysOfWeek) {
-      return res.status(400).json({
-        error: true,
-        msg: "The period is monthly, days of week should not be provided",
-      });
-    }
-
     if (frequency && frequency !== "unlimited") {
       // Check if the frequency is lower than the timesCreated
       if (frequency < fixedItem.timesCreated) {
@@ -233,7 +218,7 @@ export const updateFixedItem = async (req: Request, res: Response) => {
     }
 
     fixedItem.frequency = frequency || fixedItem.frequency;
-    fixedItem.isActive = isActive || fixedItem.isActive;
+    fixedItem.isActive = isActive !== undefined ? isActive : fixedItem.isActive;
 
     await fixedItem.save();
 

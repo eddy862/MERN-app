@@ -16,7 +16,7 @@ const UserDetails: React.FC<Props> = ({ localUser, googleUser, isVisible, avatar
 
   return (
     <div
-      className={`absolute -bottom-16 right-0 flex gap-2 justify-center items-center round bg-white p-2 rounded ${
+      className={`absolute -bottom-16 right-0 flex gap-2 justify-center items-center round bg-white p-2 rounded z-30 ${
         isVisible ? "visible" : "invisible"
       }`}
     >
