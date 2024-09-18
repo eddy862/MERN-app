@@ -1,5 +1,6 @@
 import FixedExpense from "../models/fixedItem.model";
 import Transaction from "../models/transaction.model";
+import { updateBudgetTotal } from "./totalMadeOnBudget";
 
 export const processFixedItems = async (userId?: string) => {
   const query: any = userId
@@ -53,6 +54,8 @@ const createTransaction = async (fixedExpense: any) => {
   });
 
   await newExpense.save();
+
+  await updateBudgetTotal(fixedExpense.category);
 
   fixedExpense.recentCreatedDate = new Date();
 };

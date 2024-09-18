@@ -95,6 +95,7 @@ const Dashboard = (props: Props) => {
     incomeByCategory,
     totalIncome,
     totalExpense,
+    loading,
   } = useTransactionAnalysis(startDate, endDate);
 
   const { transactionGroups } = useTransactionGroups({
@@ -121,6 +122,14 @@ const Dashboard = (props: Props) => {
       : transactionsType === "income"
       ? totalIncome
       : balance;
+
+  if (loading) {
+    return (
+      <Main>
+        <p className="text-center text-gray-500 mt-5">Loading...</p>
+      </Main>
+    );
+  }
 
   return (
     <Main>
@@ -168,7 +177,6 @@ const Dashboard = (props: Props) => {
           selectedBalanceTimeFrame === "year")) && (
         <SelectYear
           startDate={startDate}
-          endDate={endDate}
           yearOffset={yearOffset}
           setYearOffset={setYearOffset}
         />

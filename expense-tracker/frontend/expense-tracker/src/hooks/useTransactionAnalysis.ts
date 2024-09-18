@@ -21,6 +21,7 @@ const useTransactionAnalysis = (startDate: string, endDate: string) => {
   );
   const [totalIncome, setTotalIncome] = useState(0);
   const [totalExpense, setTotalExpense] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
 
@@ -92,6 +93,8 @@ const useTransactionAnalysis = (startDate: string, endDate: string) => {
           navigate("/login");
         }
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -99,7 +102,7 @@ const useTransactionAnalysis = (startDate: string, endDate: string) => {
     fetchTransactions();
   }, [startDate, endDate]);
 
-  return { balance, expenseByCategory, incomeByCategory, totalIncome, totalExpense };
+  return { balance, expenseByCategory, incomeByCategory, totalIncome, totalExpense, loading };
 };
 
 export default useTransactionAnalysis;

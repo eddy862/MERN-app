@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 const useFixedItems = () => {
   const [fixedItems, setFixedItems] = useState<IFixedItem[]>([]);
+  const [loading, setLoading] = useState(true)
 
   const navigate = useNavigate()
 
@@ -21,6 +22,8 @@ const useFixedItems = () => {
           navigate("/login");
         }
       }
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -28,7 +31,7 @@ const useFixedItems = () => {
     fetchFixedItems();
   }, []);
 
-  return { fixedItems, fetchFixedItems };
+  return { fixedItems, fetchFixedItems, loading };
 };
 
 export default useFixedItems;

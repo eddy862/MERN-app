@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import Transaction from "../models/transaction.model";
 import { IUser } from "../models/user.model";
+import { updateBudgetTotal } from "../utils/totalMadeOnBudget";
 const { matchedData } = require("express-validator");
 
 export const getAllTransaction = async (req: Request, res: Response) => {
@@ -48,7 +49,7 @@ export const getAllTransaction = async (req: Request, res: Response) => {
   try {
     let transactions;
     if (groupByDate) {
-      const groupFormat = groupByDate === 'month' ? '%Y-%m' : '%Y-%m-%d';
+      const groupFormat = groupByDate === "month" ? "%Y-%m" : "%Y-%m-%d";
       transactions = await Transaction.aggregate([
         { $match: query },
         {
@@ -93,6 +94,8 @@ export const addNewTransaction = async (req: Request, res: Response) => {
 
     await newTransaction.save();
 
+    await updateBudgetTotal(category);
+
     return res.status(201).json({ error: false, transaction: newTransaction });
   } catch {
     return res
@@ -123,6 +126,15 @@ export const updateTransaction = async (req: Request, res: Response) => {
         .json({ error: true, msg: "Transaction not found" });
     }
 
+    if (category) {
+      if (category !== transaction.category.toString()) {
+        await updateBudgetTotal(category);
+        await updateBudgetTotal(transaction.category.toString());
+      }
+    } else {
+      await updateBudgetTotal(transaction.category.toString());
+    }
+
     return res.status(200).json({ error: false, transaction });
   } catch {
     return res
@@ -146,6 +158,8 @@ export const deleteTransaction = async (req: Request, res: Response) => {
         .status(404)
         .json({ error: true, msg: "Transaction not found" });
     }
+
+    await updateBudgetTotal(deletedTran.category.toString());
 
     return res.status(200).json({ error: false, transaction: deletedTran });
   } catch {

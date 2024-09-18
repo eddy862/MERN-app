@@ -3,14 +3,12 @@ import React from "react";
 
 type Props = {
   startDate: string;
-  endDate: string;
   yearOffset: number;
   setYearOffset: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const SelectYear = ({
   startDate,
-  endDate,
   yearOffset,
   setYearOffset,
 }: Props) => {
@@ -26,14 +24,6 @@ const SelectYear = ({
         />
         <p className="text-center">
           {new Date(startDate).toLocaleDateString("ms-MY", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-          })}{" "}
-          -{" "}
-          {new Date(endDate).toLocaleDateString("ms-MY", {
-            day: "2-digit",
-            month: "2-digit",
             year: "numeric",
           })}
         </p>

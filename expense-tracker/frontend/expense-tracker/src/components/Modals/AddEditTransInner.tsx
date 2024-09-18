@@ -10,14 +10,14 @@ type Props = {
   isTransModalOpen: ITransModal;
   setIsTransModalOpen: React.Dispatch<React.SetStateAction<ITransModal>>;
   fetchTransactionGroups: () => Promise<void>;
-  setIsCategoryModalOpen: React.Dispatch<React.SetStateAction<ICategoryModal>>
+  setIsCategoryModalOpen: React.Dispatch<React.SetStateAction<ICategoryModal>>;
 };
 
 const AddEditTransInner = ({
   isTransModalOpen,
   setIsTransModalOpen,
   fetchTransactionGroups,
-  setIsCategoryModalOpen
+  setIsCategoryModalOpen,
 }: Props) => {
   const { categories } = useContext(CategoryContext);
 
@@ -39,7 +39,9 @@ const AddEditTransInner = ({
       ? selectedTransaction.category
       : incomes[0]._id
   );
-  const [amount, setAmount] = useState(selectedTransaction?.amount.toString() || "0");
+  const [amount, setAmount] = useState(
+    selectedTransaction?.amount.toString() || "0"
+  );
   const [date, setDate] = useState(
     selectedTransaction?.date
       ? selectedTransaction.date.split("T")[0]
@@ -53,7 +55,9 @@ const AddEditTransInner = ({
   const deleteTransaction = async () => {
     try {
       if (selectedTransaction) {
-        await axiosInstance.delete(`/api/transactions/${selectedTransaction._id}`);
+        await axiosInstance.delete(
+          `/api/transactions/${selectedTransaction._id}`
+        );
         await fetchTransactionGroups();
         setIsTransModalOpen({ isOpen: false });
       }
@@ -66,7 +70,7 @@ const AddEditTransInner = ({
         setError("An unexpected error occurred. Please try again.");
       }
     }
-  }
+  };
 
   const addTransaction = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,6 +82,11 @@ const AddEditTransInner = ({
 
     if (description.length > 100) {
       setError("Description cannot exceed 100 characters");
+      return;
+    }
+
+    if (Number(amount) <= 0) {
+      setError("Amount must be greater than 0");
       return;
     }
 
@@ -207,14 +216,14 @@ const AddEditTransInner = ({
         <div className="mt-4 flex gap-2">
           <button
             type="submit"
-            className="py-2 flex-1 bg-purple-500 hover:bg-purple-400 text-white rounded-md font-medium"
+            className="py-2 flex-1 bg-purple-500 hover:bg-purple-600 text-white rounded-md font-medium"
           >
             {isTransModalOpen.type === "add" ? "Add" : "Update"} Transaction
           </button>
 
           {isTransModalOpen.type === "edit" && (
             <button
-              className="py-2 flex-1 bg-slate-400 hover:bg-slate-300 text-white rounded-md font-medium"
+              className="py-2 flex-1 bg-red-500 hover:bg-red-600 text-white rounded-md font-medium"
               onClick={deleteTransaction}
             >
               Delete Transaction

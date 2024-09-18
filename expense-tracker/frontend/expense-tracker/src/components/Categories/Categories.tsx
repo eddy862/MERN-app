@@ -42,6 +42,7 @@ const Categories = ({
             key={category._id}
             category={category}
             setSelectedId={setSelectedId}
+            selectedId={selectedId}
           />
         ))}
       </div>

@@ -33,7 +33,7 @@ export interface ISchedule {
 }
 
 const FixedItems = ({}: Props) => {
-  const { fixedItems, fetchFixedItems } = useFixedItems();
+  const { fixedItems, fetchFixedItems, loading } = useFixedItems();
 
   const [isFixedItemModalOpen, setIsFixedItemModalOpen] =
     useState<IAddEditFixedItemModal>({ isOpen: false, type: "add" });
@@ -62,6 +62,14 @@ const FixedItems = ({}: Props) => {
     daysOfWeek: [0],
     daysOfMonth: [1],
   });
+
+  if (loading) {
+    return (
+      <Main>
+        <p className="text-center text-gray-500">Loading...</p>
+      </Main>
+    );
+  }
 
   return (
     <Main>
@@ -115,7 +123,7 @@ const FixedItems = ({}: Props) => {
           fetchFixedItems={fetchFixedItems}
           modalType={isFixedItemModalOpen.type}
           selectedEditFixedItem={isFixedItemModalOpen.selectedFixedItem}
-          setSelectedCategory = {setDefaultSelectedCategory}
+          setSelectedCategory={setDefaultSelectedCategory}
           setSelectedSchedule={setSelectedSchedule}
         />
       </Modal>
