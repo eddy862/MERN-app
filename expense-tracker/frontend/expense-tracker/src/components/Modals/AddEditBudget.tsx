@@ -9,6 +9,7 @@ import SetCustomDate from "../Dashboard/SetCustomDate";
 import axiosInstance from "../../utils/axiosInstance";
 import { isAxiosError } from "axios";
 import { CategoryContext } from "../../contexts/CategoryContext";
+import { IBudgetsFilter } from "../../types/budgets";
 
 type Props = {
   isAddEditModalOpen: IAddEditBudgetModal;
@@ -17,7 +18,7 @@ type Props = {
   >;
   selectedCategory: ICategory | null;
   setSelectedCategory: (category: ICategory) => void;
-  fetchBudgets: () => Promise<void>;
+  fetchBudgets: (filter?: IBudgetsFilter) => Promise<void>;
   onCategoryModalOpen: () => void;
 };
 

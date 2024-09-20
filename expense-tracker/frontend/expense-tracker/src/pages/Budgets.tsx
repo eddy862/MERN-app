@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import Main from "../layouts/Main";
 import useBudgets from "../hooks/useBudgets";
 import BudgetList from "../components/Budgets/BudgetList";
-import { IBudget } from "./../types/budgets";
+import { IBudget, IBudgetsFilter } from "./../types/budgets";
 import Modal from "react-modal";
 import AddItemButton from "../components/Buttons/AddItemButton";
 import AddEditBudget from "../components/Modals/AddEditBudget";
@@ -21,6 +21,15 @@ export interface IAddEditBudgetModal {
 }
 
 const Budgets: React.FC<Props> = (props) => {
+  const [searchFilter, setSearchFilter] = useState<IBudgetsFilter>({
+    startDate: new Date(new Date().getFullYear(), 0, 2)
+      .toISOString()
+      .split("T")[0], // fisrt day of the month
+    endDate: new Date(new Date().getFullYear(), 12, 1)
+      .toISOString()
+      .split("T")[0], // last day of the month
+  });
+
   const { budgets, fetchBudgets, loading } = useBudgets();
 
   const { categories, defaultSelectedCategory, setDefaultSelectedCategory } =
@@ -61,6 +70,11 @@ const Budgets: React.FC<Props> = (props) => {
             selectedBudget: budget,
           })
         }
+        fetchBudgets={fetchBudgets}
+        searchFilter={searchFilter}
+        setSearchFilter={setSearchFilter}
+        onCategoryModalOpen={() => setIsSelectCategoryModalOpen(true)}
+        selectedCategory={defaultSelectedCategory}
       />
 
       <AddItemButton

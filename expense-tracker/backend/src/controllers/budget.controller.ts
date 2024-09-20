@@ -5,9 +5,49 @@ const { matchedData } = require("express-validator");
 
 export const getAllBudgets = async (req: Request, res: Response) => {
   const userId = (req.user as IUser)._id;
+  const { category, period, startDate, endDate } = matchedData(req);
+
+  if (startDate && !endDate) {
+    return res.status(400).json({
+      error: true,
+      msg: "End date is required when start date is provided",
+    });
+  }
+
+  if (endDate && !startDate) {
+    return res.status(400).json({
+      error: true,
+      msg: "Start date is required when end date is provided",
+    });
+  }
+
+  if (startDate && endDate && startDate > endDate) {
+    return res.status(400).json({
+      error: true,
+      msg: "Start date must be before end date",
+    });
+  }
+
+  const query: any = { user: userId };
+
+  if (category) {
+    query.category = category;
+  }
+
+  if (period) {
+    query.period = period;
+  }
+
+  if (startDate) {
+    query.startDate = { $gte: new Date(startDate as string) };
+  }
+
+  if (endDate) {
+    query.endDate = { $lte: new Date(endDate as string) };
+  }
 
   try {
-    const budgets = await Budget.find({ user: userId });
+    const budgets = await Budget.find(query);
 
     return res.status(200).json({ error: false, budgets });
   } catch {

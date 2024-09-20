@@ -7,3 +7,10 @@ export interface IBudget {
   endDate: string;
   totalMade: number;
 }
+
+export interface IBudgetsFilter {
+  category?: string;
+  period?: "monthly" | "yearly" | "customised";
+  startDate?: string;
+  endDate?: string;
+}

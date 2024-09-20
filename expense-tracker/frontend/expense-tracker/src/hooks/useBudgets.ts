@@ -2,17 +2,19 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
 import { isAxiosError } from "axios";
-import { IBudget } from "../types/budgets";
+import { IBudget, IBudgetsFilter } from "../types/budgets";
 
-const useBudgets =  () => {
+const useBudgets = () => {
   const [budgets, setBudgets] = useState<IBudget[]>([]);
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const fetchBudgets = async () => {
+  const fetchBudgets = async (filter?: IBudgetsFilter) => {
     try {
-      const response = await axiosInstance.get("/api/budgets");
+      const response = await axiosInstance.get("/api/budgets", {
+        params: filter,
+      });
       if (response.data.budgets) {
         setBudgets(response.data.budgets);
       }
@@ -23,7 +25,7 @@ const useBudgets =  () => {
         }
       }
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -32,6 +34,6 @@ const useBudgets =  () => {
   }, []);
 
   return { budgets, fetchBudgets, loading };
-}
+};
 
 export default useBudgets;
