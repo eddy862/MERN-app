@@ -18,7 +18,7 @@ type Props = {
   >;
   selectedCategory: ICategory | null;
   setSelectedCategory: (category: ICategory) => void;
-  fetchBudgets: (filter?: IBudgetsFilter) => Promise<void>;
+  fetchBudgets: (filter?: IBudgetsFilter, reset?: boolean) => Promise<void>;
   onCategoryModalOpen: () => void;
 };
 
@@ -142,7 +142,7 @@ const AddEditBudget = ({
         });
       }
 
-      await fetchBudgets();
+      await fetchBudgets({}, true);
       onModalClose();
     } catch (error) {
       if (isAxiosError(error)) {
@@ -163,7 +163,7 @@ const AddEditBudget = ({
     if (selectedBudget) {
       try {
         await axiosInstance.delete(`/api/budgets/${selectedBudget._id}`);
-        await fetchBudgets();
+        await fetchBudgets({}, true);
         onModalClose();
       } catch (error) {
         if (isAxiosError(error)) {

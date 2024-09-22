@@ -48,6 +48,7 @@ const App = (props: Props) => {
             </CategoryProvider>
           }
         />
+        <Route path="*" element={<Login />} />
       </Routes>
     </Router>
   );

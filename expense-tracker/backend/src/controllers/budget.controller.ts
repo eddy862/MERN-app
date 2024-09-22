@@ -2,10 +2,20 @@ import { Request, Response } from "express";
 import { IUser } from "../models/user.model";
 import Budget from "../models/budget.model";
 const { matchedData } = require("express-validator");
+import Category from "../models/category.model";
 
 export const getAllBudgets = async (req: Request, res: Response) => {
   const userId = (req.user as IUser)._id;
-  const { category, period, startDate, endDate } = matchedData(req);
+  const {
+    category,
+    period,
+    startDate,
+    endDate,
+    categoryType,
+    page = 1,
+    limit = 10,
+    completed,
+  } = matchedData(req);
 
   if (startDate && !endDate) {
     return res.status(400).json({
@@ -46,8 +56,28 @@ export const getAllBudgets = async (req: Request, res: Response) => {
     query.endDate = { $lte: new Date(endDate as string) };
   }
 
+  if (categoryType) {
+    const categories = await Category.find({ type: categoryType });
+    query.category = { $in: categories.map((cat) => cat._id) };
+  }
+
+  // Aggregation pipeline to handle field-to-field comparison when 'completed' is true
+  const aggregationPipeline: any[] = [
+    { $match: query },
+    { $skip: (page - 1) * limit },
+    { $limit: limit },
+  ];
+
+  if (completed) {
+    aggregationPipeline.unshift({
+      $match: {
+        $expr: { $gte: ["$totalMade", "$amount"] },
+      },
+    });
+  }
+
   try {
-    const budgets = await Budget.find(query);
+    const budgets = await Budget.aggregate(aggregationPipeline);
 
     return res.status(200).json({ error: false, budgets });
   } catch {

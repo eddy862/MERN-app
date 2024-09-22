@@ -6,6 +6,7 @@ export interface IBudget {
   startDate: string;
   endDate: string;
   totalMade: number;
+  createdAt: string;
 }
 
 export interface IBudgetsFilter {
@@ -13,4 +14,8 @@ export interface IBudgetsFilter {
   period?: "monthly" | "yearly" | "customised";
   startDate?: string;
   endDate?: string;
+  categoryType?: "expense" | "income";
+  page?: number;
+  limit?: number;
+  completed?: boolean;
 }

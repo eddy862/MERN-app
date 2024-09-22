@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
+import mongoosePaginate from "mongoose-paginate-v2";
 
 interface IBudget extends Document {
   user: Schema.Types.ObjectId;
@@ -15,11 +16,22 @@ const BudgetSchema: Schema = new Schema({
   user: { type: Schema.Types.ObjectId, required: true },
   amount: { type: Number, required: true },
   category: { type: Schema.Types.ObjectId, required: true, ref: "Category" },
-  period: { type: String, required: true, enum: ["monthly", "yearly", "customised"] },
+  period: {
+    type: String,
+    required: true,
+    enum: ["monthly", "yearly", "customised"],
+  },
   createdAt: { type: Date, default: Date.now },
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: true },
-  totalMade: { type: Number, default: 0 }
+  totalMade: { type: Number, default: 0 },
 });
 
-export default mongoose.model<IBudget>("Budget", BudgetSchema);
+BudgetSchema.plugin(mongoosePaginate);
+
+export default mongoose.model<IBudget, mongoose.PaginateModel<IBudget>>(
+  "Budget",
+  BudgetSchema,
+  "budgets"
+);
+

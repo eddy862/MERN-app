@@ -9,6 +9,13 @@ import AddEditBudget from "../components/Modals/AddEditBudget";
 import { CategoryContext } from "../contexts/CategoryContext";
 import SelectFixedItemCategory from "../components/Modals/SelectFixedItemCategory";
 import { ICategory } from "../types/categories";
+import BudgetFilter from "../components/Budgets/BudgetFilter";
+import BudgetSort from "../components/Budgets/BudgetSort";
+import {
+  sortByAmount,
+  sortByCompletedPercentage,
+  sortByCreatedAt,
+} from "../utils/sortBudgets";
 
 Modal.setAppElement("#root");
 
@@ -20,6 +27,11 @@ export interface IAddEditBudgetModal {
   selectedBudget?: IBudget;
 }
 
+export interface ISortBudgets {
+  name: "amount" | "createdAt" | "completed%";
+  isAsc: boolean;
+}
+
 const Budgets: React.FC<Props> = (props) => {
   const [searchFilter, setSearchFilter] = useState<IBudgetsFilter>({
     startDate: new Date(new Date().getFullYear(), 0, 2)
@@ -29,8 +41,25 @@ const Budgets: React.FC<Props> = (props) => {
       .toISOString()
       .split("T")[0], // last day of the month
   });
+  const [sortBudgets, setSortBudgets] = useState<ISortBudgets>({
+    name: "amount",
+    isAsc: true,
+  });
 
-  const { budgets, fetchBudgets, loading } = useBudgets();
+  const { budgets, fetchBudgets, loading, hasMore } = useBudgets();
+  let budgetsCopy: IBudget[] = [...budgets];
+
+  if (sortBudgets.name === "amount") {
+    budgetsCopy = sortByAmount(budgets, sortBudgets.isAsc);
+  }
+
+  if (sortBudgets.name === "createdAt") {
+    budgetsCopy = sortByCreatedAt(budgets, sortBudgets.isAsc);
+  }
+
+  if (sortBudgets.name === "completed%") {
+    budgetsCopy = sortByCompletedPercentage(budgets, sortBudgets.isAsc);
+  }
 
   const { categories, defaultSelectedCategory, setDefaultSelectedCategory } =
     useContext(CategoryContext);
@@ -51,18 +80,20 @@ const Budgets: React.FC<Props> = (props) => {
     setDefaultSelectedCategory(categories[0]);
   }, [isAddEditModalOpen.isOpen]);
 
-  if (loading) {
-    return (
-      <Main>
-        <p className="text-center text-gray-500">Loading...</p>
-      </Main>
-    );
-  }
-
   return (
     <Main>
+      <BudgetFilter
+        fetchBudgets={fetchBudgets}
+        searchFilter={searchFilter}
+        setSearchFilter={setSearchFilter}
+        onCategoryModalOpen={() => setIsSelectCategoryModalOpen(true)}
+        selectedCategory={defaultSelectedCategory}
+      />
+
+      <BudgetSort sortBudgets={sortBudgets} setSortBudgets={setSortBudgets} />
+
       <BudgetList
-        budgets={budgets}
+        budgets={budgetsCopy}
         handleEditModalOpen={(budget: IBudget) =>
           setIsAddEditModalOpen({
             isOpen: true,
@@ -71,10 +102,8 @@ const Budgets: React.FC<Props> = (props) => {
           })
         }
         fetchBudgets={fetchBudgets}
-        searchFilter={searchFilter}
-        setSearchFilter={setSearchFilter}
-        onCategoryModalOpen={() => setIsSelectCategoryModalOpen(true)}
-        selectedCategory={defaultSelectedCategory}
+        loading={loading}
+        hasMore={hasMore}
       />
 
       <AddItemButton

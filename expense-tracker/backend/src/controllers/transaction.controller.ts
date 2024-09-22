@@ -59,8 +59,6 @@ export const getAllTransaction = async (req: Request, res: Response) => {
           },
         },
         { $sort: { _id: -1 } },
-        { $skip: (page - 1) * limit },
-        { $limit: limit },
       ]);
     } else {
       transactions = await Transaction.find(query)
@@ -68,6 +66,8 @@ export const getAllTransaction = async (req: Request, res: Response) => {
         .limit(limit)
         .sort({ date: -1 });
     }
+
+    console.log(transactions);
 
     return res.status(200).json({ error: false, transactions });
   } catch {

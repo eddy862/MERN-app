@@ -17,6 +17,16 @@ export const getBudgetsValidator = [
     .optional()
     .isISO8601()
     .withMessage("End date must be a valid date"),
+  query("categoryType")
+    .optional()
+    .isIn(["expense", "income"])
+    .withMessage('Category type must be "expense" or "income"'),
+  query("page").optional().isInt().withMessage("Page must be an integer"),
+  query("limit").optional().isInt().withMessage("Limit must be an integer"),
+  query("completed")
+    .optional()
+    .isBoolean()
+    .withMessage("Completed must be a boolean"),
 ];
 
 export const addBudgetValidator = [

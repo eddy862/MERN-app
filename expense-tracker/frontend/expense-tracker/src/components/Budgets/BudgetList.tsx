@@ -1,141 +1,61 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { IBudget, IBudgetsFilter } from "../../types/budgets";
 import BudgetItem from "./BudgetItem";
-import { ICategory } from "../../types/categories";
 
 type Props = {
   budgets: IBudget[];
   handleEditModalOpen: (budget: IBudget) => void;
-  fetchBudgets: (filter?: IBudgetsFilter) => Promise<void>;
-  searchFilter: IBudgetsFilter;
-  setSearchFilter: React.Dispatch<React.SetStateAction<IBudgetsFilter>>;
-  onCategoryModalOpen: () => void;
-  selectedCategory: ICategory | null;
+  fetchBudgets: (filter?: IBudgetsFilter, reset?: boolean) => Promise<void>;
+  loading: boolean;
+  hasMore: boolean;
 };
 
 const BudgetList = ({
   budgets,
   handleEditModalOpen,
   fetchBudgets,
-  searchFilter,
-  setSearchFilter,
-  onCategoryModalOpen,
-  selectedCategory,
+  loading,
+  hasMore,
 }: Props) => {
-  const [filterError, setFilterError] = useState("");
-  const [allCategoryChecked, setAllCategoryChecked] = useState(true);
+  const spinnerRef = useRef(null);
 
-  const onPeriodFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    if (e.target.value === "all") {
-      setSearchFilter((prev) => ({ ...prev, period: undefined }));
-    } else {
-      setSearchFilter((prev) => ({
-        ...prev,
-        period: e.target.value as IBudget["period"],
-      }));
-    }
-  };
+  // Intersection observer callback
+  const handleObserver = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      const target = entries[0];
+      if (target.isIntersecting && hasMore && !loading) {
+        fetchBudgets();
+      }
+    },
+    [loading, hasMore]
+  );
 
-  const onStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchFilter((prev) => ({ ...prev, startDate: e.target.value }));
-  };
-
-  const onEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchFilter((prev) => ({ ...prev, endDate: e.target.value }));
-  };
-
-  const handleAllCategoryChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setAllCategoryChecked(event.target.checked);
-  };
-
-  // Update search filter when all category is checked or unchecked
   useEffect(() => {
-    if (allCategoryChecked) {
-      setSearchFilter((prev) => ({ ...prev, category: undefined }));
-    } else {
-      setSearchFilter((prev) => ({
-        ...prev,
-        category: selectedCategory?._id,
-      }));
-    }
-  }, [allCategoryChecked, selectedCategory]);
-
-  const onSearch = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (
-      searchFilter.startDate &&
-      searchFilter.endDate &&
-      searchFilter.startDate > searchFilter.endDate
-    ) {
-      setFilterError("Start date cannot be greater than end date");
-      return;
-    }
-
-    setFilterError("");
-    fetchBudgets(searchFilter);
-  };
-
-  const onReset = async () => {
-    setSearchFilter({
-      startDate: new Date(new Date().getFullYear(), 0, 2)
-        .toISOString()
-        .split("T")[0],
-      endDate: new Date(new Date().getFullYear(), 12, 1)
-        .toISOString()
-        .split("T")[0],
+    const observer = new IntersectionObserver(handleObserver, {
+      root: null, // Use the viewport as the root
+      rootMargin: "20px", // Start fetching before the spinner is fully visible
+      threshold: 0.1, // Trigger when x% of the spinner is visible
     });
-    setAllCategoryChecked(true);
-    fetchBudgets();
-  };
+
+    if (spinnerRef.current) {
+      observer.observe(spinnerRef.current); // Start observing the spinner
+    }
+
+    return () => {
+      if (spinnerRef.current) {
+        observer.unobserve(spinnerRef.current); // Clean up observer
+      }
+    };
+  }, [handleObserver]);
+
+  if (loading) {
+    return <p className="text-center text-gray-500">Loading...</p>;
+  }
 
   return (
     <>
-      <form onSubmit={onSearch}>
-        <select
-          value={searchFilter.period || "all"}
-          onChange={onPeriodFilterChange}
-        >
-          <option value="all">All</option>
-          <option value="monthly">Monthly</option>
-          <option value="yearly">Yearly</option>
-          <option value="customised">Customised</option>
-        </select>
-
-        <input
-          type="date"
-          value={searchFilter.startDate}
-          onChange={onStartDateChange}
-        />
-        <input
-          type="date"
-          value={searchFilter.endDate}
-          onChange={onEndDateChange}
-        />
-
-        <input
-          type="checkbox"
-          id="allCategory"
-          checked={allCategoryChecked}
-          onChange={handleAllCategoryChange}
-        />
-        <label htmlFor="allCategory">All Category</label>
-
-        {!allCategoryChecked && (
-          <div className="cursor-pointer" onClick={onCategoryModalOpen}>
-            Selected Category: {selectedCategory?.name}
-          </div>
-        )}
-
-        {filterError && <p className="text-red-500 text-xs">{filterError}</p>}
-
-        <button type="submit">Search</button>
-        <button onClick={onReset}>Reset</button>
-      </form>
-
       {budgets.length > 0 ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 pb-16">
           {budgets.map((budget) => (
             <BudgetItem
               key={budget._id}
@@ -147,6 +67,12 @@ const BudgetList = ({
       ) : (
         <p className="text-center text-gray-500">No budgets found</p>
       )}
+
+      <div ref={spinnerRef}>
+        {hasMore && loading && (
+          <p className="text-center text-gray-500">Loading...</p>
+        )}
+      </div>
     </>
   );
 };
