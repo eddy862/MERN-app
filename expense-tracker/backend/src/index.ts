@@ -16,6 +16,7 @@ import configGooglePassport from "./config/strategies/google-strategy";
 import connectDB from "./config/mongoose";
 import { checkAuth } from "./middlewares/checkAuth";
 import cors from "cors";
+import path from "path";
 
 const app = express();
 
@@ -31,21 +32,24 @@ app.use(passport.initialize());
 configJwtPassport(passport);
 configGooglePassport(passport);
 
-app.get("/", (req, res) => {
-  res.send("Hello World");
-});
+const distPath = path.resolve(__dirname, "../../frontend/expense-tracker/dist");
+
+app.use(express.static(distPath));
 
 app.use("/api/auth", UserAuthRouter);
 
 //protected routes
-app.use(checkAuth);
+app.use("/api/transactions", checkAuth, TransactionRouter);
+app.use("/api/categories", checkAuth, CategoryRouter);
+app.use("/api/budgets", checkAuth, BudgetRouter);
+app.use("/api/fixedItems", checkAuth, FixedExpenseRouter);
+app.use("/api/user", checkAuth, UserRouter);
+app.use("/api/parentCategories", checkAuth, ParentCategoryRouter);
 
-app.use("/api/transactions", TransactionRouter);
-app.use("/api/categories", CategoryRouter);
-app.use("/api/budgets", BudgetRouter);
-app.use("/api/fixedItems", FixedExpenseRouter);
-app.use("/api/user", UserRouter);
-app.use("/api/parentCategories", ParentCategoryRouter);
+app.get("*", (req, res) => {
+  res.sendFile(path.join(distPath, "index.html"));
+});
+
 const PORT = 5000;
 
 app.listen(PORT, () => {

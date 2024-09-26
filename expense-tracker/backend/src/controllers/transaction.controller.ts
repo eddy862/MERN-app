@@ -67,8 +67,6 @@ export const getAllTransaction = async (req: Request, res: Response) => {
         .sort({ date: -1 });
     }
 
-    console.log(transactions);
-
     return res.status(200).json({ error: false, transactions });
   } catch {
     return res

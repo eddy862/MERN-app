@@ -7,6 +7,7 @@ import Transactions from "./pages/Transactions";
 import { CategoryProvider } from "./contexts/CategoryContext";
 import FixedItems from "./pages/FixedItems";
 import Budgets from "./pages/Budgets";
+import GoogleCallback from "./pages/GoogleCallback";
 
 type Props = {};
 
@@ -16,6 +17,7 @@ const App = (props: Props) => {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/googleCallback" element={<GoogleCallback />} />
         <Route
           path="/dashboard"
           element={

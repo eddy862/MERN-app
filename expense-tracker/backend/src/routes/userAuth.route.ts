@@ -30,7 +30,7 @@ router.get(
 );
 router.get(
   "/google/callback",
-  passport.authenticate("google", { failureRedirect: "/", session: false }),
+  passport.authenticate("google", { session: false }),
   googleCallback
 );
 

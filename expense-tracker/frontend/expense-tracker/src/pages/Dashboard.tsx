@@ -21,6 +21,24 @@ import SetCustomMonth from "../components/Dashboard/SetCustomMonth";
 type Props = {};
 
 const Dashboard = (props: Props) => {
+  useEffect(() => {
+    // Retrieve access token and refresh token from cookies
+    const accessToken = getCookieValue("token");
+    const refreshToken = getCookieValue("refreshToken");
+
+    if (accessToken && refreshToken) {
+      // Save tokens to localStorage
+      localStorage.setItem("token", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+
+      // Optionally: Clear the cookies after transferring to localStorage
+      document.cookie =
+        "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      document.cookie =
+        "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    }
+  }, []);
+
   const [transactionsType, setTransactionsType] = useState<
     "income" | "expense" | "balance"
   >("expense");
@@ -236,3 +254,15 @@ const Dashboard = (props: Props) => {
 };
 
 export default Dashboard;
+
+function getCookieValue(name: string) {
+  const cookieArr = document.cookie.split(";");
+  for (let cookie of cookieArr) {
+    let [key, value] = cookie.split("=");
+    key = key.trim();
+    if (key === name) {
+      return decodeURIComponent(value);
+    }
+  }
+  return null;
+}

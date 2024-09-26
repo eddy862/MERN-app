@@ -23,7 +23,10 @@ export const registerUser = async (req: Request, res: Response) => {
         .json({ error: true, msg: "Username already exists." });
     }
 
-    const findUser2 = await User.findOne({ email, googleId: { $exists: false } });
+    const findUser2 = await User.findOne({
+      email,
+      googleId: { $exists: false },
+    });
 
     if (findUser2) {
       return res
@@ -37,12 +40,19 @@ export const registerUser = async (req: Request, res: Response) => {
 
     await newUser.save();
 
-    const accessToken = jwt.sign({ id: newUser.id }, jwtSecret, { expiresIn: "1h" });
-    const refreshToken = jwt.sign({ id: newUser.id }, jwtSecret, { expiresIn: "7d" });
-    
-    return res
-      .status(201)
-      .json({ error: false, user: { username, email }, token: accessToken, refreshToken });
+    const accessToken = jwt.sign({ id: newUser.id }, jwtSecret, {
+      expiresIn: "1h",
+    });
+    const refreshToken = jwt.sign({ id: newUser.id }, jwtSecret, {
+      expiresIn: "7d",
+    });
+
+    return res.status(201).json({
+      error: false,
+      user: { username, email },
+      token: accessToken,
+      refreshToken,
+    });
   } catch (err) {
     return res.status(500).json({ error: true, msg: err });
   }
@@ -59,12 +69,10 @@ export const loginUser = async (req: Request, res: Response) => {
   }
 
   try {
-    const user = await User.findOne(
-      {
-        $or: [{ username }, { email }],
-        googleId: { $exists: false },
-      }
-    );
+    const user = await User.findOne({
+      $or: [{ username }, { email }],
+      googleId: { $exists: false },
+    });
 
     if (!user || !isLocalUser(user)) {
       return res
@@ -76,21 +84,32 @@ export const loginUser = async (req: Request, res: Response) => {
       return res.status(400).json({ error: true, msg: "Incorrect password" });
     }
 
-    const accessToken = jwt.sign({ id: user.id }, jwtSecret, { expiresIn: "1h" });
-    const refreshToken = jwt.sign({ id: user.id }, jwtSecret, { expiresIn: "7d" });
+    const accessToken = jwt.sign({ id: user.id }, jwtSecret, {
+      expiresIn: "1h",
+    });
+    const refreshToken = jwt.sign({ id: user.id }, jwtSecret, {
+      expiresIn: "7d",
+    });
 
-    const {password: _, ...userWithoutPwd} = user.toObject();
+    const { password: _, ...userWithoutPwd } = user.toObject();
 
-    return res.status(200).json({ error: false, user: userWithoutPwd, token: accessToken, refreshToken });
+    return res.status(200).json({
+      error: false,
+      user: userWithoutPwd,
+      token: accessToken,
+      refreshToken,
+    });
   } catch (err) {
     return res.status(500).json({ error: true, msg: err });
   }
 };
 
-export const googleCallback  = async (req: Request, res: Response) => {
+export const googleCallback = async (req: Request, res: Response) => {
   const user = req.user as { id: string };
   const accessToken = jwt.sign({ id: user.id }, jwtSecret, { expiresIn: "1h" });
-  const refreshToken = jwt.sign({ id: user.id }, jwtSecret, { expiresIn: "7d" });
+  const refreshToken = jwt.sign({ id: user.id }, jwtSecret, {
+    expiresIn: "7d",
+  });
 
-  return res.status(200).json({ error: false, user, token: accessToken, refreshToken });
-}
+  return res.redirect(`/googleCallback?token=${accessToken}&refreshToken=${refreshToken}`);
+};

@@ -7,6 +7,10 @@ type Props = {
 }
 
 const ThirdpartySignup = ({method}: Props) => {
+  const handleGoogleSignup = () => {
+    
+  }
+
   return (
     <>
       <div className="relative mt-8">
