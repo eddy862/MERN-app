@@ -1,66 +1,129 @@
-# MERN apps
-Full stack applications built with the MERN (MongoDB, Express, React, Node)
+# MERN Apps (TypeScript) — Notes App + Expense Tracker
 
-## 1. Notes App
-A app focus on basic CRUD operation, user authentication using JWT
+This repository contains **two full‑stack MERN applications** built to practice end‑to‑end product features: authentication, CRUD, protected APIs, and a React UI.
 
-### Features: 
-- Create, edit, and delete notes
-- Search notes by title or description
-- Responsive design for mobile and desktop
-- User authentication (register, login, logout)
-- Update user's profile (username, email, password)
+I built these projects to demonstrate full‑stack skills across **MongoDB + Express + React + Node**, with heavy TypeScript usage (repo is ~95% TypeScript).
 
-### Installation:
-#### Clone the Repository
+## Projects
+
+### 1) Notes App (CRUD + JWT Auth)
+A note‑taking app focused on authenticated CRUD workflows.
+
+**Key features**
+- User authentication: **sign up / log in**
+- Protected Notes API (JWT)
+- Create, edit, delete notes
+- Search notes by title/description
+- Responsive UI
+- User profile updates (username / email / password)
+
+**API routes (backend)**
+- `POST /auth/signup` — register
+- `POST /auth/login` — login
+- `GET /user` — get current user (protected)
+- `PATCH /user` — update current user (protected)
+- `GET /notes` — list notes (protected)
+- `POST /notes` — create note (protected)
+- `PATCH /notes/:id` — update note (protected)
+- `DELETE /notes/:id` — delete note (protected)
+
+**Tech highlights**
+- Backend: Node + Express + MongoDB (Mongoose), JWT, bcrypt
+- Frontend: React + TypeScript + Vite, React Router, axios, Tailwind CSS
+
+**Run locally**
 ```bash
-git clone https://github.com/eddy862/MERN-app.git
-cd MERN-app/Notes-app
-```
+# from repo root
+cd Notes-app
 
-#### Backend Setup
-1. Navigate to 'backend' directory and install dependencies:
-```bash
+# backend
 cd backend
 npm install
-```
-2. Create a 'env.' file in the same directory with the following environment variables:
-```plaintext
-ACCESS_TOKEN_SECRET=<your_access_token_secret>
-DB_CONNECTION_STRING=<your_mongo_uri>
-```
-3. Start the backend server:
-```bash
-npm start
-```
 
-#### Frontend Setup
-1. Navigate to 'notes-app' directory and install dependencies:
-```bash
+# create .env in Notes-app/backend
+# ACCESS_TOKEN_SECRET=...
+# DB_CONNECTION_STRING=...
+
+npm start
+
+# frontend (in a new terminal)
 cd ../frontend/notes-app
 npm install
-```
-2. Start the fronted development server:
-```bash
 npm run dev
 ```
+Frontend runs on `http://localhost:5173` and the backend runs on `http://localhost:8000`.
 
-### Usage:
-1. Make sure both the backedn and frontend servers are running.
-2. Open browser and go to http://localhost:5173/login for login or http://localhost:5173/signup for new user registration
-3. After login, start creating, editing, and organizing notes
+---
 
-### API Endpoint:
-#### Authentication
-- POST /auth/signup: register a new user
-- POST /auth/login: login with existing credentials
+### 2) Expense Tracker (JWT + Google OAuth + Recurring Transactions)
+A more advanced finance tracker that includes authentication, budgeting, categories, and automation.
 
-#### User
-- GET /user: get info of logged-in user
-- PATCH /user: update info of logged-in user
+**Key features**
+- Auth flows:
+  - Local email/password auth
+  - **Google OAuth** login
+  - JWT + refresh token endpoint
+- Protected API under `/api/*`
+- Transactions, categories, budgets, fixed items (recurring income/expenses)
+- Scheduled job to process recurring transactions
 
-#### Notes
-- GET /notes: get all notes for logged-in user
-- POST /notes: create a note
-- PATCH /notes/:id: update an existing note
-- DELETE /notes/:id: delete a note
+**API routes (backend)**
+- Public:
+  - `POST /api/auth/login`
+  - `POST /api/auth/register`
+  - `POST /api/auth/refresh-token`
+  - `GET /api/auth/google`
+  - `GET /api/auth/google/callback`
+- Protected (require auth middleware):
+  - `/api/transactions`
+  - `/api/categories`
+  - `/api/budgets`
+  - `/api/fixedItems`
+  - `/api/user`
+  - `/api/parentCategories`
+
+**Tech highlights**
+- Backend: TypeScript, Express, MongoDB (Mongoose), Passport (JWT + Google), validation, cron jobs
+- Frontend: React + TypeScript + Vite, Material UI + Bootstrap, charts (Chart.js / Recharts), axios
+
+**Run locally**
+```bash
+# from repo root
+cd expense-tracker
+
+# backend
+cd backend
+npm install
+
+# create .env in expense-tracker/backend
+# MONGO_URI=...
+# plus auth secrets (JWT / refresh token) and Google OAuth credentials if enabled
+
+npm run dev
+
+# frontend (in a new terminal)
+cd ../frontend/expense-tracker
+npm install
+npm run dev
+```
+Backend runs on port `5000`.
+
+## Tech stack
+- **Frontend:** React, TypeScript, Vite, React Router, axios
+- **Backend:** Node.js, Express, TypeScript/JavaScript, Passport (JWT + Google OAuth)
+- **Database:** MongoDB + Mongoose
+- **Auth:** JWT, refresh tokens, bcrypt password hashing
+
+## Notes on configuration
+- This repo does **not** include a checked‑in `.env.example` file.
+- You’ll need to create your own `.env` files as described above.
+
+## Repo structure
+- `Notes-app/`
+  - `backend/` (Express API)
+  - `frontend/notes-app/` (React UI)
+- `expense-tracker/`
+  - `backend/` (Express API)
+  - `frontend/expense-tracker/` (React UI)
+
+---
